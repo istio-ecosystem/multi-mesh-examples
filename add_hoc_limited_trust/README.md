@@ -240,12 +240,14 @@ and [apply default destination rules](https://istio.io/docs/examples/bookinfo/#a
 The following diagram shows the state of the clusters after deploying the Bookinfo services:
 
 ![Two clusters after initial setup](MeshFederation1_bookinfo.svg)
+*Two clusters after initial setup*
 
 ### A single cluster with isolation between namespaces after initial setup
 
 In case you perform the instructions in this blog post on a single cluster, your cluster has the following state now:
 
 ![A single cluster with isolation between namespaces after initial setup](MeshFederation1b_bookinfo.svg)
+*A single cluster with isolation between namespaces after initial setup*
 
 ## Deploy private gateways for cross-cluster communication (one-time setup)
 
@@ -545,6 +547,7 @@ You can use the command of your choice to generate certificates and keys, the co
 The following diagram shows the state of the clusters after deploying the private gateways:
 
 ![Two clusters after deploying private gateways](MeshFederation2_bookinfo.svg)
+*Two clusters after deploying private gateways*
 
 ## Expose and consume services (on a per-service basis)
 
@@ -863,12 +866,14 @@ Bind `reviews` exposed from `cluster2` as `reviews.default.svc.cluster.local` in
 The following diagram shows the state of the clusters after configuring exposing and consuming of the `ratings` service:
 
 ![Two clusters after configuring exposing and consuming the reviews service](MeshFederation3_bookinfo.svg)
+*Two clusters after configuring exposing and consuming the reviews service*
 
 ### A single cluster with isolation between namespaces after configuring exposing and consuming the ratings service
 
 In case you perform the instructions in this blog post on a single cluster, your cluster has the following state now:
 
 ![A single cluster with isolation between namespaces after configuring exposing and consuming the ratings service](MeshFederation3b_bookinfo.svg)
+*A single cluster with isolation between namespaces after configuring exposing and consuming the ratings service*
 
 ### Cancel exposure of ratings
 
