@@ -1,7 +1,7 @@
 # Ad-hoc limited-trust mesh federation
 
 This example uses the Istio
-[Bookinfo](https://istio.io/docs/examples/bookinfo/) application as an example for a mesh-federation approach. It lists the principles of the approach first, then the prerequisites for running the example, the instructions to _federate_ two meshes, and finally troubleshooting and cleanup instructions.
+[Bookinfo](https://istio.io/docs/examples/bookinfo/) application as an example for a mesh-federation approach. It lists the principles of the approach first, then the prerequisites for running the example,  instructions to _federate_ two meshes, and finally troubleshooting and cleanup instructions.
 
 ## Principles
 
