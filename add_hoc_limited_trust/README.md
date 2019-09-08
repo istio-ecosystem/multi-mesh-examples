@@ -1191,7 +1191,7 @@ for example [JWT](https://jwt.io).
 
 ### Apply Istio RBAC on the `bookinfo` namespace
 
-1.   Create Istio service roles for read access to `reviews` and `ratings`.
+1.  Create Istio service roles for read access to `reviews` and `ratings`.
 
     ```bash
     kubectl apply  --context=$CTX_CLUSTER2 -n bookinfo -f - <<EOF
