@@ -1,5 +1,7 @@
 # Ad-hoc limited-trust mesh federation
 
+***Works with Istio 1.2.5 only. There is a bug open to enable it in Istio 1.3.0 - https://github.com/istio/istio/issues/17112***
+
 This example uses the Istio
 [Bookinfo](https://istio.io/docs/examples/bookinfo/) application as an example for a mesh-federation approach. It lists the principles of the approach first, then the prerequisites for running the example,  instructions to _federate_ two meshes, and finally troubleshooting and cleanup instructions.
 
