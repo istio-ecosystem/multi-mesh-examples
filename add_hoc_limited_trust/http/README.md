@@ -5,7 +5,7 @@ in [common multi-mesh setup](../common-setup).
 
 ## Initial setup
 
-In each of the clusters, deploy the [sleep]({{< github_tree >}}/samples/sleep) sample app to use as a test source for
+In each of the clusters, deploy the [sleep](https://github.com/istio/istio/blob/master/samples/sleep) sample app to use as a test source for
 sending requests.
 
 ```bash
@@ -105,7 +105,7 @@ kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER3
     EOF
     ```
 
-1.  Deploy the [httpbin]({{< github_tree >}}/samples/httpbin) sample:
+1.  Deploy the [httpbin](https://github.com/istio/istio/blob/master/samples/httpbin) sample:
 
     ```bash
     kubectl create --context=$CTX_CLUSTER3 -f samples/httpbin/httpbin.yaml -n sample

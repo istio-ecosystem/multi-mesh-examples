@@ -109,7 +109,7 @@ prepending it with a prefix string. The services differ only by their prefixes, 
 
 ### Deploy sleep samples in all the clusters and test that the services are accessed in each cluster, locally
 
-1.  In each of the clusters, deploy the [sleep]({{< github_tree >}}/samples/sleep) sample app to use as a test source
+1.  In each of the clusters, deploy the [sleep](https://github.com/istio/istio/blob/master/samples/sleep) sample app to use as a test source
     for sending requests. (If you already have the sleep app deployed, no need to delete it)
 
     ```bash

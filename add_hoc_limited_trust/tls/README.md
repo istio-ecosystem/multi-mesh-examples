@@ -180,7 +180,7 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
     secret/sleep-secret created
     ```
 
-1.  In each of the clusters, deploy the [sleep]({{< github_tree >}}/samples/sleep) sample app to use as a test source
+1.  In each of the clusters, deploy the [sleep](https://github.com/istio/istio/blob/master/samples/sleep) sample app to use as a test source
     for sending requests. (If you already have the sleep app deployed, no need to delete it)
 
     ```bash
