@@ -22,6 +22,9 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
     ```bash
     kubectl create --context=$CTX_CLUSTER2 namespace sample
     kubectl label --context=$CTX_CLUSTER2 namespace sample istio-injection=enabled
+    ```
+
+    ```
     namespace/sample created
     namespace/sample labeled
     ```
@@ -37,6 +40,9 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
 
     ```bash
     kubectl create secret tls nginxsecret --key ./nginx1.key --cert ./nginx1.crt -n sample --context=$CTX_CLUSTER2
+    ```
+
+    ```
     secret "nginxsecret" created
     ```
 
@@ -44,6 +50,9 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
 
     ```bash
     kubectl create configmap nginxconfigmap --from-file=samples/https/default.conf -n sample --context=$CTX_CLUSTER2
+    ```
+
+    ```
     configmap "nginxconfigmap" created
     ```
 
@@ -51,6 +60,9 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
 
     ```bash
     cat samples/https/nginx-app.yaml | sed 's/name: https/name: tls/g' | kubectl apply -n sample --context=$CTX_CLUSTER2 -f -
+    ```
+
+    ```
     service "my-nginx" created
     replicationcontroller "my-nginx" created
     ```
@@ -78,6 +90,9 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
     ```bash
     kubectl create --context=$CTX_CLUSTER3 namespace sample
     kubectl label --context=$CTX_CLUSTER3 namespace sample istio-injection=enabled
+    ```
+
+    ```
     namespace/sample created
     namespace/sample labeled
     ```
@@ -96,6 +111,9 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
     ```bash
     kubectl create secret tls nginxsecret --key ./nginx2.key --cert ./nginx2.crt -n sample --context=$CTX_CLUSTER3
     kubectl create secret tls nginxerrorsecret --key ./nginx-error.key --cert ./nginx-error.crt -n sample --context=$CTX_CLUSTER3
+    ```
+
+    ```
     secret "nginxsecret" created
     secret "nginxerrorsecret" created
     ```
@@ -114,6 +132,9 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
     ```bash
     kubectl create configmap nginxconfigmap --from-file=./default2.conf -n sample --context=$CTX_CLUSTER3
     kubectl create configmap nginxerrorconfigmap --from-file=./default-error.conf -n sample --context=$CTX_CLUSTER3
+    ```
+
+    ```
     configmap "nginxconfigmap" created
     configmap "nginxerrorconfigmap" created
     ```
@@ -123,6 +144,9 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
 
     ```bash
     cat samples/https/nginx-app.yaml | sed 's/name: https/name: tls/g' | kubectl apply -n sample --context=$CTX_CLUSTER3 -f -
+    ```
+
+    ```
     service "my-nginx" created
     replicationcontroller "my-nginx" created
     ```
@@ -147,6 +171,9 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
 
     ```bash
     cat samples/https/nginx-app.yaml | sed 's/name: https/name: tls/g' | sed 's/name: my-nginx/name: nginx-error/g' | sed 's/secretName: nginxsecret/secretName: nginxerrorsecret/g' | sed 's/name: nginxconfigmap/name: nginxerrorconfigmap/g' | sed 's/app: nginx/app: nginx-error/g' | kubectl apply -n sample --context=$CTX_CLUSTER3 -f -
+    ```
+
+    ```
     service "nginx-error" created
     replicationcontroller "nginx-error" created
     ```
@@ -175,6 +202,9 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
     kubectl create secret generic sleep-secret --from-file ./nginx.example.com.crt --context=$CTX_CLUSTER1
     kubectl create secret generic sleep-secret --from-file ./nginx.example.com.crt --context=$CTX_CLUSTER2
     kubectl create secret generic sleep-secret --from-file ./nginx.example.com.crt --context=$CTX_CLUSTER3
+    ```
+
+    ```
     secret/sleep-secret created
     secret/sleep-secret created
     secret/sleep-secret created
@@ -195,6 +225,9 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
     kubectl get pod -l app=sleep --context=$CTX_CLUSTER1
     kubectl get pod -l app=sleep --context=$CTX_CLUSTER2
     kubectl get pod -l app=sleep --context=$CTX_CLUSTER3
+    ```
+
+    ```
     NAME                     READY   STATUS    RESTARTS   AGE
     sleep-666475687f-f42ft   2/2     Running   0          4m8s
     NAME                     READY   STATUS    RESTARTS   AGE
@@ -207,6 +240,9 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER2) -c sleep --context=$CTX_CLUSTER2 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://my-nginx.sample.svc.cluster.local | grep -o "<title>.*</title>"
+    ```
+
+    ```
     <title>Welcome to nginx!</title>
     ```
 
@@ -214,6 +250,9 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -c sleep --context=$CTX_CLUSTER3 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://my-nginx.sample.svc.cluster.local | grep -o "<title>.*</title>"
+    ```
+
+    ```
     <title>Nginx reloaded!</title>
     ```
 
@@ -221,6 +260,9 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -c sleep --context=$CTX_CLUSTER3 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://nginx-error.sample.svc.cluster.local | grep -o "<title>.*</title>"
+    ```
+
+    ```
     <title>Error</title>
     ```
 
@@ -512,6 +554,9 @@ Bind the service exposed from `cluster2` to the same name in `cluster1`.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://my-nginx.sample.svc.cluster.local | grep -o "<title>.*</title>"
+    ```
+
+    ```
     <title>Welcome to nginx!</title>
     ```
 
@@ -894,6 +939,9 @@ Bind the services exposed from `cluster3` to the same name in `cluster1`.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://nginx-error.sample.svc.cluster.local | grep -o "<title>.*</title>"
+    ```
+
+    ```
     <title>Error</title>
     ```
 
@@ -934,6 +982,9 @@ Bind the services exposed from `cluster3` to the same name in `cluster1`.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl -s --cacert /etc/sleep/tls/nginx.example.com.crt https://my-nginx.sample.svc.cluster.local | grep -o "<title>.*</title>"; done'
+    ```
+
+    ```
     <title>Welcome to nginx!</title>
     <title>Nginx reloaded!</title>
     <title>Welcome to nginx!</title>
@@ -1069,6 +1120,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -c sleep --context=$CTX_CLUSTER3 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://nginx-error.sample.svc.cluster.local | grep -o "<title>.*</title>"
+    ```
+
+    ```
     <title>Error</title>
     ```
 
@@ -1077,6 +1131,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://nginx-error.sample.svc.cluster.local | grep -o "<title>.*</title>"
+    ```
+
+    ```
     <title>Error</title>
     ```
 
@@ -1084,6 +1141,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl -s --cacert /etc/sleep/tls/nginx.example.com.crt https://my-nginx.sample.svc.cluster.local | grep -o "<title>.*</title>"; done'
+    ```
+
+    ```
     <title>Welcome to nginx!</title>
     <title>Nginx reloaded!</title>
     <title>Welcome to nginx!</title>
@@ -1185,6 +1245,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl -s --cacert /etc/sleep/tls/nginx.example.com.crt https://my-nginx.sample.svc.cluster.local | grep -o "<title>.*</title>"; done'
+    ```
+
+    ```
     <title>Welcome to nginx!</title>
     <title>Nginx reloaded!</title>
     <title>Welcome to nginx!</title>
@@ -1201,6 +1264,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://nginx-error.sample.svc.cluster.local | grep -o "<title>.*</title>"
+    ```
+
+    ```
     command terminated with exit code 35
     ```
 

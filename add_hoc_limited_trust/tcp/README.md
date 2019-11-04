@@ -18,6 +18,9 @@ prepending it with a prefix string. The services differ only by their prefixes, 
     ```bash
     kubectl create --context=$CTX_CLUSTER2 namespace sample
     kubectl label --context=$CTX_CLUSTER2 namespace sample istio-injection=enabled
+    ```
+
+    ```
     namespace/sample created
     namespace/sample labeled
     ```
@@ -27,6 +30,9 @@ prepending it with a prefix string. The services differ only by their prefixes, 
     ```bash
     kubectl apply -n sample -l app=tcp-echo,version=v1 --context=$CTX_CLUSTER2 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-echo.yaml
     kubectl apply -n sample -l service=tcp-echo --context=$CTX_CLUSTER2 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-echo.yaml
+    ```
+
+    ```
     deployment.apps/tcp-echo-v1 created
     service/tcp-echo created
     ```
@@ -54,6 +60,9 @@ prepending it with a prefix string. The services differ only by their prefixes, 
     ```bash
     kubectl create --context=$CTX_CLUSTER3 namespace sample
     kubectl label --context=$CTX_CLUSTER3 namespace sample istio-injection=enabled
+    ```
+
+    ```
     namespace/sample created
     namespace/sample labeled
     ```
@@ -63,6 +72,9 @@ prepending it with a prefix string. The services differ only by their prefixes, 
     ```bash
     kubectl apply -n sample -l app=tcp-echo,version=v2 --context=$CTX_CLUSTER3 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-echo.yaml
     kubectl apply -n sample -l service=tcp-echo --context=$CTX_CLUSTER3 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-echo.yaml
+    ```
+
+    ```
     deployment.apps/tcp-echo-v2 created
     service/tcp-echo created
     ```
@@ -87,6 +99,9 @@ prepending it with a prefix string. The services differ only by their prefixes, 
 
     ```bash
     kubectl apply -n sample --context=$CTX_CLUSTER3 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-hello-echo.yaml
+    ```
+
+    ```
     deployment.apps/tcp-hello-echo created
     service/tcp-hello-echo created
     ```
@@ -124,6 +139,9 @@ prepending it with a prefix string. The services differ only by their prefixes, 
     kubectl get pod -l app=sleep --context=$CTX_CLUSTER1
     kubectl get pod -l app=sleep --context=$CTX_CLUSTER2
     kubectl get pod -l app=sleep --context=$CTX_CLUSTER3
+    ```
+
+    ```
     NAME                     READY   STATUS    RESTARTS   AGE
     sleep-666475687f-f42ft   2/2     Running   0          4m8s
     NAME                     READY   STATUS    RESTARTS   AGE
@@ -136,6 +154,9 @@ prepending it with a prefix string. The services differ only by their prefixes, 
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER2) -c sleep --context=$CTX_CLUSTER2 -- sh -c 'echo world | nc tcp-echo.sample.svc.cluster.local 9000'
+    ```
+
+    ```
     one world
     ```
 
@@ -143,6 +164,9 @@ prepending it with a prefix string. The services differ only by their prefixes, 
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -c sleep --context=$CTX_CLUSTER3 -- sh -c 'echo world | nc tcp-echo.sample.svc.cluster.local 9000'
+    ```
+
+    ```
     two world
     ```
 
@@ -150,6 +174,9 @@ prepending it with a prefix string. The services differ only by their prefixes, 
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -c sleep --context=$CTX_CLUSTER3 -- sh -c 'echo world | nc tcp-hello-echo.sample.svc.cluster.local 9000'
+    ```
+
+    ```
     hello world
     ```
 
@@ -234,6 +261,10 @@ sections, step 3. You need to expose more services, add more ports to the defini
 
     ```bash
     echo world | openssl s_client -host $CLUSTER2_INGRESS_HOST -port 31400 -cert c1.example.com.crt -key c1.example.com.key -CAfile example.com.crt -quiet
+    ```
+
+    ```
+    ...
     one world
     ```
 
@@ -421,6 +452,9 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'echo world | nc echo 9001'
+    ```
+
+    ```
     one world
     ```
 
@@ -499,6 +533,10 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 
     ```bash
     echo world | openssl s_client -host $CLUSTER3_INGRESS_HOST -port 31400 -cert c1.example.com.crt -key c1.example.com.key -CAfile example.com.crt -quiet
+    ```
+
+    ```
+    ...
     two world
     ```
 
@@ -509,6 +547,10 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 
     ```bash
     echo world | openssl s_client -host $CLUSTER3_INGRESS_HOST -port 31401 -cert c1.example.com.crt -key c1.example.com.key -CAfile example.com.crt -quiet
+    ```
+
+    ```
+    ...
     hello world
     ```
 
@@ -696,6 +738,9 @@ Bind `tcp-echo` exposed from `cluster3` as `echo.default.svc.cluster.local` in `
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do date | nc echo 9001; done'
+    ```
+
+    ```
     one Mon Nov  4 04:20:21 UTC 2019
     two Mon Nov  4 04:20:21 UTC 2019
     two Mon Nov  4 04:20:22 UTC 2019
@@ -907,6 +952,9 @@ Bind `tcp-hello-echo` exposed from the third cluster as `tcp-hello-echo.default.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'echo world | nc tcp-hello-echo 9001'
+    ```
+
+    ```
     hello world
     ```
 
@@ -914,6 +962,9 @@ Bind `tcp-hello-echo` exposed from the third cluster as `tcp-hello-echo.default.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do date | nc echo 9001; done'
+    ```
+
+    ```
     one Mon Nov  4 04:20:21 UTC 2019
     two Mon Nov  4 04:20:21 UTC 2019
     two Mon Nov  4 04:20:22 UTC 2019
@@ -1048,6 +1099,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -c sleep --context=$CTX_CLUSTER3 -- sh -c 'echo world | nc tcp-hello-echo.sample.svc.cluster.local 9000'
+    ```
+
+    ```
     hello world
     ```
 
@@ -1056,6 +1110,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'echo world | nc tcp-hello-echo 9001'
+    ```
+
+    ```
     hello world
     ```
 
@@ -1064,6 +1121,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do date | nc echo 9001; done'
+    ```
+
+    ```
     one Mon Nov  4 04:20:21 UTC 2019
     two Mon Nov  4 04:20:21 UTC 2019
     two Mon Nov  4 04:20:22 UTC 2019
@@ -1165,6 +1225,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     echo world | openssl s_client -host $CLUSTER3_INGRESS_HOST -port 31400 -cert c1.example.com.crt -key c1.example.com.key -CAfile example.com.crt -quiet
+    ```
+
+    ```
     depth=1 O = example Inc., CN = example.com
     verify return:1
     depth=0 O = "example Inc., department 3", CN = c3.example.com
@@ -1178,6 +1241,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     echo world | openssl s_client -host $CLUSTER3_INGRESS_HOST -port 31400 -cert c4.example.com.crt -key c4.example.com.key -CAfile example.com.crt -quiet
+    ```
+
+    ```
     depth=1 O = example Inc., CN = example.com
     verify return:1
     depth=0 O = "example Inc., department 3", CN = c3.example.com
@@ -1190,6 +1256,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     echo world | openssl s_client -host $CLUSTER3_INGRESS_HOST -port 31401 -cert c1.example.com.crt -key c1.example.com.key -CAfile example.com.crt -quiet
+    ```
+
+    ```
     depth=1 O = example Inc., CN = example.com
     verify return:1
     depth=0 O = "example Inc., department 3", CN = c3.example.com
@@ -1202,6 +1271,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     echo world | openssl s_client -host $CLUSTER3_INGRESS_HOST -port 31401 -cert c4.example.com.crt -key c4.example.com.key -CAfile example.com.crt -quiet
+    ```
+
+    ```
     depth=1 O = example Inc., CN = example.com
     verify return:1
     depth=0 O = "example Inc., department 3", CN = c3.example.com
@@ -1216,6 +1288,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'echo world | nc tcp-hello-echo 9001'
+    ```
+
+    ```
     hello world
     ```
 
@@ -1224,6 +1299,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do date | nc echo 9001; done'
+    ```
+
+    ```
     one Mon Nov  4 04:20:21 UTC 2019
     two Mon Nov  4 04:20:21 UTC 2019
     two Mon Nov  4 04:20:22 UTC 2019

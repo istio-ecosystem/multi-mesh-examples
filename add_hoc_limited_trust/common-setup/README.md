@@ -10,6 +10,9 @@ Three Kubernetes clusters with default Istio installations, referenced below as 
     export CTX_CLUSTER2=$(kubectl config view -o jsonpath='{.contexts[1].name}')
     export CTX_CLUSTER3=$(kubectl config view -o jsonpath='{.contexts[2].name}')
     echo CTX_CLUSTER1 = ${CTX_CLUSTER1}, CTX_CLUSTER2 = ${CTX_CLUSTER2}, CTX_CLUSTER3 = ${CTX_CLUSTER3}
+    ```
+
+    ```
     CTX_CLUSTER1 = cluster1, CTX_CLUSTER2 = cluster2, CTX_CLUSTER3 = cluster1
     ```
 
@@ -243,6 +246,9 @@ You can use the command of your choice to generate certificates and keys, the co
 
     ```bash
     kubectl get pods $(kubectl get pod -l istio=private-egressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1)  -n istio-private-gateways --context=$CTX_CLUSTER1
+    ```
+
+    ```
     NAME                                           READY   STATUS    RESTARTS   AGE
     istio-private-egressgateway-586c8cb5db-5m77h   1/1     Running   0          43s
     ```
@@ -251,6 +257,9 @@ You can use the command of your choice to generate certificates and keys, the co
 
     ```bash
     kubectl exec -it $(kubectl get pod -l istio=private-egressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1)  -n istio-private-gateways --context=$CTX_CLUSTER1 -- ls -al /etc/istio/c1.example.com/certs /etc/istio/example.com/certs
+    ```
+
+    ```
     /etc/istio/c1.example.com/certs:
     total 4
     drwxrwxrwt 3 root root  120 Jul 29 00:27 .
@@ -334,6 +343,9 @@ You can use the command of your choice to generate certificates and keys, the co
 
     ```bash
     kubectl get pods $(kubectl get pod -l istio=private-ingressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER2)  -n istio-private-gateways --context=$CTX_CLUSTER2
+    ```
+
+    ```
     NAME                                            READY   STATUS    RESTARTS   AGE
     istio-private-ingressgateway-546fccbcdd-2w8n7   1/1     Running   0          2m51s
     ```
@@ -342,6 +354,9 @@ You can use the command of your choice to generate certificates and keys, the co
 
     ```bash
     kubectl exec -it $(kubectl get pod -l istio=private-ingressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER2)  -n istio-private-gateways --context=$CTX_CLUSTER2 -- ls -al /etc/istio/c2.example.com/certs /etc/istio/example.com/certs
+    ```
+
+    ```
     /etc/istio/c2.example.com/certs:
     total 4
     drwxrwxrwt 3 root root  120 Jul 29 00:35 .
@@ -425,6 +440,9 @@ You can use the command of your choice to generate certificates and keys, the co
 
     ```bash
     kubectl get pods $(kubectl get pod -l istio=private-ingressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3)  -n istio-private-gateways --context=$CTX_CLUSTER3
+    ```
+
+    ```
     NAME                                            READY   STATUS    RESTARTS   AGE
     istio-private-ingressgateway-546fccbcdd-2w8n7   1/1     Running   0          2m51s
     ```
@@ -433,6 +451,9 @@ You can use the command of your choice to generate certificates and keys, the co
 
     ```bash
     kubectl exec -it $(kubectl get pod -l istio=private-ingressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3)  -n istio-private-gateways --context=$CTX_CLUSTER3 -- ls -al /etc/istio/c3.example.com/certs /etc/istio/example.com/certs
+    ```
+
+    ```
     /etc/istio/c3s.example.com/certs:
     total 4
     drwxrwxrwt 3 root root  120 Jul 29 00:35 .
@@ -459,6 +480,9 @@ You can use the command of your choice to generate certificates and keys, the co
     ```bash
     kubectl get svc istio-private-ingressgateway -n istio-private-gateways --context=$CTX_CLUSTER2
     kubectl get svc istio-private-ingressgateway -n istio-private-gateways --context=$CTX_CLUSTER3
+    ```
+
+    ```
     NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                                      AGE
     istio-ingressgateway   LoadBalancer   172.21.109.129   130.211.10.121  80:31380/TCP,443:31390/TCP,31400:31400/TCP   17h
     NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                                      AGE

@@ -56,6 +56,9 @@ kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER3
 
     ```bash
     kubectl get po --context=$CTX_CLUSTER2 -n sample
+    ```
+
+    ```
     NAME                             READY     STATUS    RESTARTS   AGE
     helloworld-v2-7dd57c44c4-f56gq   2/2       Running   0          35s
     ```
@@ -64,6 +67,9 @@ kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER3
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER2 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER2 -n default -c sleep -- curl helloworld.sample.svc.cluster.local:5000/hello -w "\nResponse code: %{http_code}\n"
+    ```
+
+    ```
     Hello version: v2, instance: helloworld-v2-6cd449dff4-n7s48
 
     Response code: 200
@@ -131,6 +137,9 @@ kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER3
 
     ```bash
     kubectl get po --context=$CTX_CLUSTER3 -n sample
+    ```
+
+    ```
     NAME                            READY     STATUS    RESTARTS   AGE
     helloworld-v1-d4557d97b-pv2hr   2/2       Running   0          40s
     httpbin-5446f4d9b4-sm6jm        2/2       Running   0          40s
@@ -142,6 +151,9 @@ kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER3
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER3 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER3 -n default -c sleep -- curl helloworld.sample.svc.cluster.local:5000/hello -w "\nResponse code: %{http_code}\n"
+    ```
+
+    ```
     Hello version: v1, instance: helloworld-v1-7bb88866c4-qvmzm
 
     Response code: 200
@@ -151,6 +163,9 @@ kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER3
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER3 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER3 -n default -c sleep -- curl httpbin.sample.svc.cluster.local:8000/status/418 -w "\nResponse code: %{http_code}\n"
+    ```
+
+    ```
     -=[ teapot ]=-
 
        _...._
@@ -242,6 +257,9 @@ Once you finish the instructions above, you get the following setting:
 
     ```bash
     curl -HHost:c2.example.com --resolve c2.example.com:$CLUSTER2_SECURE_INGRESS_PORT:$CLUSTER2_INGRESS_HOST --cacert example.com.crt --key c1.example.com.key --cert c1.example.com.crt https://c2.example.com:$CLUSTER2_SECURE_INGRESS_PORT/sample/helloworld/hello -w "\nResponse code: %{http_code}\n"
+    ```
+
+    ```
     Hello version: v2, instance: helloworld-v2-6cd449dff4-r9bl9
 
     Response code: 200
@@ -447,6 +465,9 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl hw:5000/hello -w "\nResponse code: %{http_code}\n"
+    ```
+
+    ```
     Hello version: v2, instance: helloworld-v2-6cd449dff4-r9bl9
 
     Response code: 200
@@ -525,6 +546,9 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 
     ```bash
     curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c1.example.com.key --cert c1.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/helloworld/hello -w "\nResponse code: %{http_code}\n"
+    ```
+
+    ```
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
 
     Response code: 200
@@ -534,6 +558,9 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 
     ```bash
     curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c1.example.com.key --cert c1.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/httpbin/status/418 -w "\nResponse code: %{http_code}\n"
+    ```
+
+    ```
 
         -=[ teapot ]=-
 
@@ -748,6 +775,9 @@ Bind `helloworld` exposed from `cluster3` as `hw.default.svc.cluster.local` in `
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl hw:5000/hello; done'
+    ```
+
+    ```
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
     Hello version: v2, instance: helloworld-v2-6cd449dff4-r9bl9
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
@@ -902,8 +932,9 @@ Bind `httpbin` exposed from `cluster3` as `httpbin.default.svc.cluster.local` in
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl httpbin:8000/status/418 -w "\nResponse code: %{http_code}\n"
+    ```
 
-
+    ```
         -=[ teapot ]=-
 
            _...._
@@ -921,6 +952,9 @@ Bind `httpbin` exposed from `cluster3` as `httpbin.default.svc.cluster.local` in
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl hw:5000/hello; done'
+    ```
+
+    ```
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
     Hello version: v2, instance: helloworld-v2-6cd449dff4-r9bl9
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
@@ -1044,6 +1078,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER3 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER3 -n default -c sleep -- curl helloworld.sample:5000/hello -w "\nResponse code: %{http_code}\n"
+    ```
+
+    ```
     RBAC: access denied
     Response code: 403
     ```
@@ -1052,6 +1089,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER3 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER3 -n default -c sleep -- curl httpbin.sample:8000/status/418 -w "\nResponse code: %{http_code}\n"
+    ```
+
+    ```
     -=[ teapot ]=-
 
        _...._
@@ -1070,8 +1110,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl httpbin:8000/status/418 -w "\nResponse code: %{http_code}\n"
+    ```
 
-
+    ```
         -=[ teapot ]=-
 
            _...._
@@ -1089,6 +1130,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl hw:5000/hello; done'
+    ```
+
+    ```
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
     Hello version: v2, instance: helloworld-v2-6cd449dff4-r9bl9
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
@@ -1175,6 +1219,9 @@ Istio will deny all the unspecified access.
 
         ```bash
         curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c1.example.com.key --cert c1.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/helloworld/hello -w "\nResponse code: %{http_code}\n"
+        ```
+
+        ```
         Hello version: v1, instance: helloworld-v1-7bb88866c4-qvmzm
 
         Response code: 200
@@ -1184,6 +1231,9 @@ Istio will deny all the unspecified access.
 
         ```bash
         curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c4.example.com.key --cert c4.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/helloworld/hello -w "\nResponse code: %{http_code}\n"
+        ```
+
+        ```
         RBAC: access denied
         Response code: 403
         ```
@@ -1192,6 +1242,9 @@ Istio will deny all the unspecified access.
 
         ```bash
         curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c1.example.com.key --cert c1.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/httpbin/status/418 -w "\nResponse code: %{http_code}\n"
+        ```
+
+        ```
         RBAC: access denied
         Response code: 403
         ```
@@ -1200,7 +1253,9 @@ Istio will deny all the unspecified access.
 
         ```bash
         curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c4.example.com.key --cert c4.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/httpbin/status/418 -w "\nResponse code: %{http_code}\n"
+        ```
 
+        ```
             -=[ teapot ]=-
 
                _...._
@@ -1219,6 +1274,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl httpbin:8000/status/418 -w "\nResponse code: %{http_code}\n"
+    ```
+
+    ```
     RBAC: access denied
     Response code: 403
     ```
@@ -1227,6 +1285,9 @@ Istio will deny all the unspecified access.
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl hw:5000/hello; done'
+    ```
+
+    ```
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
     Hello version: v2, instance: helloworld-v2-6cd449dff4-r9bl9
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
