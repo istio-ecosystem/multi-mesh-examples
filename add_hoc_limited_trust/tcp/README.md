@@ -1295,9 +1295,9 @@ kubectl delete --context=$CTX_CLUSTER3 gateway istio-private-ingressgateway -n i
 Undeploy the services:
 
 ```bash
-kubectl delete -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER1
-kubectl delete -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER2
-kubectl delete -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
+kubectl delete -f @samples/sleep/sleep.yaml--context=$CTX_CLUSTER1
+kubectl delete -f @samples/sleep/sleep.yaml--context=$CTX_CLUSTER2
+kubectl delete -f @samples/sleep/sleep.yaml--context=$CTX_CLUSTER3
 ```
 
 ### Undeploy the TCP service in the second cluster

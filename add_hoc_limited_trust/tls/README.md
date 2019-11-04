@@ -50,7 +50,7 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
 1.  Deploy an `Nginx` sample service:
 
     ```bash
-    cat @samples/https/nginx-app.yaml@ | sed 's/name: https/name: tls/g' | kubectl apply -n sample --context=$CTX_CLUSTER2 -f -
+    cat @samples/https/nginx-app.yaml| sed 's/name: https/name: tls/g' | kubectl apply -n sample --context=$CTX_CLUSTER2 -f -
     service "my-nginx" created
     replicationcontroller "my-nginx" created
     ```
@@ -122,7 +122,7 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
     of the example, to demonstrate federating TLS services, not only HTTPS.
 
     ```bash
-    cat @samples/https/nginx-app.yaml@ | sed 's/name: https/name: tls/g' | kubectl apply -n sample --context=$CTX_CLUSTER3 -f -
+    cat @samples/https/nginx-app.yaml| sed 's/name: https/name: tls/g' | kubectl apply -n sample --context=$CTX_CLUSTER3 -f -
     service "my-nginx" created
     replicationcontroller "my-nginx" created
     ```
@@ -146,7 +146,7 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
 1.  Deploy the `nginx-error` service:
 
     ```bash
-    cat @samples/https/nginx-app.yaml@ | sed 's/name: https/name: tls/g' | sed 's/name: my-nginx/name: nginx-error/g' | sed 's/secretName: nginxsecret/secretName: nginxerrorsecret/g' | sed 's/name: nginxconfigmap/name: nginxerrorconfigmap/g' | sed 's/app: nginx/app: nginx-error/g' | kubectl apply -n sample --context=$CTX_CLUSTER3 -f -
+    cat @samples/https/nginx-app.yaml| sed 's/name: https/name: tls/g' | sed 's/name: my-nginx/name: nginx-error/g' | sed 's/secretName: nginxsecret/secretName: nginxerrorsecret/g' | sed 's/name: nginxconfigmap/name: nginxerrorconfigmap/g' | sed 's/app: nginx/app: nginx-error/g' | kubectl apply -n sample --context=$CTX_CLUSTER3 -f -
     service "nginx-error" created
     replicationcontroller "nginx-error" created
     ```
@@ -1272,9 +1272,9 @@ kubectl delete destinationrule istio-private-egressgateway c2-example-com c3-exa
 1.  Undeploy the services:
 
     ```bash
-    kubectl delete -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER1
-    kubectl delete -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER2
-    kubectl delete -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
+    kubectl delete -f @samples/sleep/sleep.yaml--context=$CTX_CLUSTER1
+    kubectl delete -f @samples/sleep/sleep.yaml--context=$CTX_CLUSTER2
+    kubectl delete -f @samples/sleep/sleep.yaml--context=$CTX_CLUSTER3
     ```
 
 ### Undeploy the Nginx services
@@ -1300,9 +1300,9 @@ kubectl delete destinationrule istio-private-egressgateway c2-example-com c3-exa
 1.  Undeploy the `Nginx` sample services.
 
     ```bash
-    cat @samples/https/nginx-app.yaml@ | sed 's/name: https/name: tls/g' | kubectl delete -n sample --context=$CTX_CLUSTER2 -f -
-    cat @samples/https/nginx-app.yaml@ | sed 's/name: https/name: tls/g' | kubectl delete -n sample --context=$CTX_CLUSTER3 -f -
-    cat @samples/https/nginx-app.yaml@ | sed 's/name: https/name: tls/g' | sed 's/name: my-nginx/name: nginx-error/g' | sed 's/secretName: nginxsecret/secretName: nginxerrorsecret/g' | sed 's/name: nginxconfigmap/name: nginxerrorconfigmap/g' | sed 's/app: nginx/app: nginx-error/g' | kubectl delete -n sample --context=$CTX_CLUSTER3 -f -
+    cat @samples/https/nginx-app.yaml| sed 's/name: https/name: tls/g' | kubectl delete -n sample --context=$CTX_CLUSTER2 -f -
+    cat @samples/https/nginx-app.yaml| sed 's/name: https/name: tls/g' | kubectl delete -n sample --context=$CTX_CLUSTER3 -f -
+    cat @samples/https/nginx-app.yaml| sed 's/name: https/name: tls/g' | sed 's/name: my-nginx/name: nginx-error/g' | sed 's/secretName: nginxsecret/secretName: nginxerrorsecret/g' | sed 's/name: nginxconfigmap/name: nginxerrorconfigmap/g' | sed 's/app: nginx/app: nginx-error/g' | kubectl delete -n sample --context=$CTX_CLUSTER3 -f -
     ```
 
 1.  Remove the `sample` namespaces in all the three clusters:
