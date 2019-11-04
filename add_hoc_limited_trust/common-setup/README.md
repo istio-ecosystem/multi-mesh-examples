@@ -1,10 +1,3 @@
----
-title: Common setup for all the multi-mesh examples.
-subtitle: Two exposing clusters and one consuming cluster
-description: Two exposing clusters and one consuming cluster.
-keywords: [traffic-management,multicluster,security,gateway,tls]
----
-
 ### Prerequisites for three clusters
 
 Three Kubernetes clusters with default Istio installations, referenced below as `cluster1`, `cluster2` and `cluster3`.

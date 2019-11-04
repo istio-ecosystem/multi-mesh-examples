@@ -1,10 +1,3 @@
----
-title: Perform mesh federation for HTTP services.
-subtitle: Access HTTP services in remote meshes and perform load balancing between services in different clusters
-description: Access HTTP services in remote meshes and perform load balancing between services in different clusters.
-keywords: [traffic-management,multicluster,security,gateway,tls]
----
-
 ### Prerequisites for three clusters
 
 See [Prerequisites for three clusters](/docs/examples/multimesh/multimesh-common-setup/#prerequisites-for-three-clusters)
