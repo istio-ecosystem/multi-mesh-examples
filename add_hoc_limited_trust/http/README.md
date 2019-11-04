@@ -964,7 +964,7 @@ Istio will deny all the unspecified access.
 
 ### Apply Istio RBAC on the `sample` namespace
 
-1.   Create Istio service roles for read access to `helloworld` and `httpbin`.
+1.  Create Istio service roles for read access to `helloworld` and `httpbin`.
 
     ```bash
     kubectl apply  --context=$CTX_CLUSTER3 -n sample -f - <<EOF
