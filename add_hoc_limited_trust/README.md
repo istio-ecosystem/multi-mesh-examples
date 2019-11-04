@@ -8,6 +8,7 @@ Principles:
   and decide to _federate_ the meshes at some later point in time.
 - **private gateways for cross-cluster communication**, with dedicated certificates and private keys.
 - **limited trust**: Only the gateways trust each other, there is no trust between sidecars from different meshes.
+- use **standard Kubernetes DNS**, no need for special DNS plugins.
 
 Examples:
 * [HTTP](http)
