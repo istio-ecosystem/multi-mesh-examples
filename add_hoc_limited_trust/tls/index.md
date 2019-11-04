@@ -18,53 +18,53 @@ multiple service in a remote cluster. All the three services differ only by thei
 
 Create the root certificate and private key for `Nginx` services:
 
-{{< text bash >}}
+```bash
 $ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example Inc./CN=nginx.example.com' -keyout nginx.example.com.key -out nginx.example.com.crt
-{{< /text >}}
+```
 
 ### Deploy a TLS service in the second cluster
 
 1.  Create a namespace for a TLS service in the second cluster and label it for Istio sidecar injection:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl create --context=$CTX_CLUSTER2 namespace sample
     $ kubectl label --context=$CTX_CLUSTER2 namespace sample istio-injection=enabled
     namespace/sample created
     namespace/sample labeled
-    {{< /text >}}
+    ```
 
 1.  Create a certificates and a private key:
 
-    {{< text bash >}}
+    ```bash
     $ openssl req -out nginx1.csr -newkey rsa:2048 -nodes -keyout nginx1.key -subj "/CN=my-nginx.sample.svc.cluster.local/O=my-nginx.sample.svc.cluster.local"
     $ openssl x509 -req -days 365 -CA nginx.example.com.crt -CAkey nginx.example.com.key -set_serial 0 -in nginx1.csr -out nginx1.crt
-    {{< /text >}}
+    ```
 
 1.  Create secrets to contain the certificate and the private key:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl create secret tls nginxsecret --key ./nginx1.key --cert ./nginx1.crt -n sample --context=$CTX_CLUSTER2
     secret "nginxsecret" created
-    {{< /text >}}
+    ```
 
 1.  Create a configuration map used for the HTTPS service:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl create configmap nginxconfigmap --from-file=samples/https/default.conf -n sample --context=$CTX_CLUSTER2
     configmap "nginxconfigmap" created
-    {{< /text >}}
+    ```
 
 1.  Deploy an `Nginx` sample service:
 
-    {{< text bash >}}
+    ```bash
     $ cat @samples/https/nginx-app.yaml@ | sed 's/name: https/name: tls/g' | kubectl apply -n sample --context=$CTX_CLUSTER2 -f -
     service "my-nginx" created
     replicationcontroller "my-nginx" created
-    {{< /text >}}
+    ```
 
 1.  Create a destination rule for `my-nginx`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER2 -n sample -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
@@ -76,67 +76,67 @@ $ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example 
         tls:
           mode: ISTIO_MUTUAL
     EOF
-    {{< /text >}}
+    ```
 
 ### Setup the third cluster
 
 1.  Create a namespace for TLS services in the third cluster and label it for Istio sidecar injection:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl create --context=$CTX_CLUSTER3 namespace sample
     $ kubectl label --context=$CTX_CLUSTER3 namespace sample istio-injection=enabled
     namespace/sample created
     namespace/sample labeled
-    {{< /text >}}
+    ```
 
 1.  Create a certificates and a private key for two services in the third cluster:
 
-    {{< text bash >}}
+    ```bash
     $ openssl req -out nginx2.csr -newkey rsa:2048 -nodes -keyout nginx2.key -subj "/CN=my-nginx.sample.svc.cluster.local/O=my-nginx.sample.svc.cluster.local"
     $ openssl x509 -req -days 365 -CA nginx.example.com.crt -CAkey nginx.example.com.key -set_serial 1 -in nginx2.csr -out nginx2.crt
     $ openssl req -out nginx-error.csr -newkey rsa:2048 -nodes -keyout nginx-error.key -subj "/CN=nginx-error.sample.svc.cluster.local/O=nginx-error.sample.svc.cluster.local"
     $ openssl x509 -req -days 365 -CA nginx.example.com.crt -CAkey nginx.example.com.key -set_serial 2 -in nginx-error.csr -out nginx-error.crt
-    {{< /text >}}
+    ```
 
 1.  Create secrets to contain the certificates and the private keys:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl create secret tls nginxsecret --key ./nginx2.key --cert ./nginx2.crt -n sample --context=$CTX_CLUSTER3
     $ kubectl create secret tls nginxerrorsecret --key ./nginx-error.key --cert ./nginx-error.crt -n sample --context=$CTX_CLUSTER3
     secret "nginxsecret" created
     secret "nginxerrorsecret" created
-    {{< /text >}}
+    ```
 
 1.  Create configurations for Nginx services that will return different web pages from the service in the second cluster,
     namely `index2.html` and `50x.html` (the service in the second cluster returns `index.html`). The choice of the web
     page has no meaning, you just use three different web pages of the default Nginx installation.
 
-    {{< text bash >}}
+    ```bash
     $ cat samples/https/default.conf | sed 's/index.html/index2.html/g' > ./default2.conf
     $ cat samples/https/default.conf | sed 's/index.html/50x.html/g' > ./default-error.conf
-    {{< /text >}}
+    ```
 
 1.  Create configuration maps used by the Nginx services:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl create configmap nginxconfigmap --from-file=./default2.conf -n sample --context=$CTX_CLUSTER3
     $ kubectl create configmap nginxerrorconfigmap --from-file=./default-error.conf -n sample --context=$CTX_CLUSTER3
     configmap "nginxconfigmap" created
     configmap "nginxerrorconfigmap" created
-    {{< /text >}}
+    ```
 
 1.  Deploy the `my-nginx` service, while replacing `https` with `tls` in the port name. This is done for the sake
     of the example, to demonstrate federating TLS services, not only HTTPS.
 
-    {{< text bash >}}
+    ```bash
     $ cat @samples/https/nginx-app.yaml@ | sed 's/name: https/name: tls/g' | kubectl apply -n sample --context=$CTX_CLUSTER3 -f -
     service "my-nginx" created
     replicationcontroller "my-nginx" created
-    {{< /text >}}
+    ```
 
 1.  Create a destination rule for `my-nginx`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER3 -n sample -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
@@ -148,19 +148,19 @@ $ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example 
         tls:
           mode: ISTIO_MUTUAL
     EOF
-    {{< /text >}}
+    ```
 
 1.  Deploy the `nginx-error` service:
 
-    {{< text bash >}}
+    ```bash
     $ cat @samples/https/nginx-app.yaml@ | sed 's/name: https/name: tls/g' | sed 's/name: my-nginx/name: nginx-error/g' | sed 's/secretName: nginxsecret/secretName: nginxerrorsecret/g' | sed 's/name: nginxconfigmap/name: nginxerrorconfigmap/g' | sed 's/app: nginx/app: nginx-error/g' | kubectl apply -n sample --context=$CTX_CLUSTER3 -f -
     service "nginx-error" created
     replicationcontroller "nginx-error" created
-    {{< /text >}}
+    ```
 
 1.  Create a destination rule for `nginx-error`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER3 -n sample -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
@@ -172,33 +172,33 @@ $ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example 
         tls:
           mode: ISTIO_MUTUAL
     EOF
-    {{< /text >}}
+    ```
 
 ### Deploy sleep samples in all the clusters and test that the services are accessed in each cluster, locally
 
 1.  Create a secret for the `sleep` sample to contain the certificate of the server:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl create secret generic sleep-secret --from-file ./nginx.example.com.crt --context=$CTX_CLUSTER1
     $ kubectl create secret generic sleep-secret --from-file ./nginx.example.com.crt --context=$CTX_CLUSTER2
     $ kubectl create secret generic sleep-secret --from-file ./nginx.example.com.crt --context=$CTX_CLUSTER3
     secret/sleep-secret created
     secret/sleep-secret created
     secret/sleep-secret created
-    {{< /text >}}
+    ```
 
 1.  In each of the clusters, deploy the [sleep]({{< github_tree >}}/samples/sleep) sample app to use as a test source
     for sending requests. (If you already have the sleep app deployed, no need to delete it)
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER1
     $ kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER2
     $ kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER3
-    {{< /text >}}
+    ```
 
 1.  Wait until the `sleep` apps are running and the previous versions, if any, are terminated:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl get pod -l app=sleep --context=$CTX_CLUSTER1
     $ kubectl get pod -l app=sleep --context=$CTX_CLUSTER2
     $ kubectl get pod -l app=sleep --context=$CTX_CLUSTER3
@@ -208,28 +208,28 @@ $ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example 
     sleep-666475687f-hsnzx   2/2     Running   0          4m6s
     NAME                     READY   STATUS    RESTARTS   AGE
     sleep-666475687f-h6t7d   2/2     Running   0          4m6s
-    {{< /text >}}
+    ```
 
 1.  Test accessing the `my-nginx.sample.svc.cluster.local` service in the second cluster locally:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER2) -c sleep --context=$CTX_CLUSTER2 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://my-nginx.sample.svc.cluster.local | grep -o "<title>.*</title>"
     <title>Welcome to nginx!</title>
-    {{< /text >}}
+    ```
 
 1.  Test accessing the `my-nginx.sample.svc.cluster.local` service in the third cluster locally:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -c sleep --context=$CTX_CLUSTER3 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://my-nginx.sample.svc.cluster.local | grep -o "<title>.*</title>"
     <title>Nginx reloaded!</title>
-    {{< /text >}}
+    ```
 
 1.  Test accessing the `nginx-error.sample.svc.cluster.local` service in the third cluster locally:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -c sleep --context=$CTX_CLUSTER3 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://nginx-error.sample.svc.cluster.local | grep -o "<title>.*</title>"
     <title>Error</title>
-    {{< /text >}}
+    ```
 
     Note that the error title is returned as expected, by the `nginx-error` service.
 
@@ -252,7 +252,7 @@ Expose the service in `sample`:
 
 1.  Define an ingress `Gateway`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER2 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: Gateway
@@ -274,11 +274,11 @@ Expose the service in `sample`:
         hosts:
         - my-nginx.sample.svc.cluster.local
     EOF
-    {{< /text >}}
+    ```
 
 1.  Configure routing to `my-nginx.sample.svc.cluster.local`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER2 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -298,12 +298,12 @@ Expose the service in `sample`:
             port:
               number: 443
     EOF
-    {{< /text >}}
+    ```
 
 1.  Add a filter to verify that the SNI of the mutual TLS connection (the SNI reported to Mixer) is
     identical to the original SNI issued by the application:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER2 -n istio-private-gateways -f - <<EOF
     # The following filter verifies that the SNI of the mutual TLS connection (the SNI reported to Mixer) is
     # identical to the original SNI issued by the client (the SNI used for routing by the SNI proxy).
@@ -333,7 +333,7 @@ Expose the service in `sample`:
              name: sni_verifier
              config: {}
     EOF
-    {{< /text >}}
+    ```
 
 ## Consume the exposed TLS service in the first cluster
 
@@ -347,7 +347,7 @@ Bind the service exposed from `cluster2` to the same name in `cluster1`.
     services, not for Services with Endpoints.
     {{< /warning >}}
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     kind: Service
     apiVersion: v1
@@ -361,12 +361,12 @@ Bind the service exposed from `cluster2` to the same name in `cluster1`.
         protocol: TCP
         port: 15444
     EOF
-    {{< /text >}}
+    ```
 
 1.  Create an egress `Gateway` for `my-nginx-c2.sample.svc.cluster.local`, port 15444, a destination rule for
     traffic directed to the egress gateway and for traffic from the egress gateway to the second cluster:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: Gateway
@@ -429,11 +429,11 @@ Bind the service exposed from `cluster2` to the same name in `cluster1`.
               caCertificates: /etc/istio/example.com/certs/example.com.crt
               sni: my-nginx.sample.svc.cluster.local
     EOF
-    {{< /text >}}
+    ```
 
 1.  Define a virtual service to direct traffic from the egress gateway to the external service:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -455,25 +455,25 @@ Bind the service exposed from `cluster2` to the same name in `cluster1`.
               number: 15444
           weight: 100
     EOF
-    {{< /text >}}
+    ```
 
 1.  To handle DNS of the remote service, create the `sample` namespace in the first cluster.
     You have to do it since the name of the called service for TLS must match the name of the remote service
     (the client code may check that the called name matches the name returned by the server).
     The following command creates the namespace if it not exists yet:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     apiVersion: v1
     kind: Namespace
     metadata:
       name: sample
     EOF
-    {{< /text >}}
+    ```
 
 1.  Create a selector-less service `my-nginx` in `sample`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n sample -f - <<EOF
     kind: Service
     apiVersion: v1
@@ -486,12 +486,12 @@ Bind the service exposed from `cluster2` to the same name in `cluster1`.
         protocol: TCP
         port: 443
     EOF
-    {{< /text >}}
+    ```
 
 1.  Define a virtual service to direct the traffic from sidecars to the egress gateway for the `my-nginx.sample`
     service:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n sample -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -512,20 +512,20 @@ Bind the service exposed from `cluster2` to the same name in `cluster1`.
             port:
               number: 15444
     EOF
-    {{< /text >}}
+    ```
 
 1.  Test accessing the `my-nginx.sample.svc.cluster.local` service from the first cluster:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://my-nginx.sample.svc.cluster.local | grep -o "<title>.*</title>"
     <title>Welcome to nginx!</title>
-    {{< /text >}}
+    ```
 
 ## Expose two TLS services in the third cluster
 
 1.  Define an ingress `Gateway` for `my-nginx.sample`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER3 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: Gateway
@@ -547,11 +547,11 @@ Bind the service exposed from `cluster2` to the same name in `cluster1`.
         hosts:
         - my-nginx.sample.svc.cluster.local
     EOF
-    {{< /text >}}
+    ```
 
 1.  Configure routing to `my-nginx.sample.svc.cluster.local`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER3 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -571,11 +571,11 @@ Bind the service exposed from `cluster2` to the same name in `cluster1`.
             port:
               number: 443
     EOF
-    {{< /text >}}
+    ```
 
 1.  Define an ingress `Gateway` for `nginx-error.sample`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER3 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: Gateway
@@ -597,11 +597,11 @@ Bind the service exposed from `cluster2` to the same name in `cluster1`.
         hosts:
         - nginx-error.sample.svc.cluster.local
     EOF
-    {{< /text >}}
+    ```
 
 1.  Configure routing to `nginx-error.sample.svc.cluster.local`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER3 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -621,12 +621,12 @@ Bind the service exposed from `cluster2` to the same name in `cluster1`.
             port:
               number: 443
     EOF
-    {{< /text >}}
+    ```
 
 1.  Add a filter to verify that the SNI of the mutual TLS connection (the SNI reported to Mixer) is
     identical to the original SNI issued by the application:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER3 -n istio-private-gateways -f - <<EOF
     # The following filter verifies that the SNI of the mutual TLS connection (the SNI reported to Mixer) is
     # identical to the original SNI issued by the client (the SNI used for routing by the SNI proxy).
@@ -656,7 +656,7 @@ Bind the service exposed from `cluster2` to the same name in `cluster1`.
              name: sni_verifier
              config: {}
     EOF
-    {{< /text >}}
+    ```
 
 ## Consume the both exposed TLS services in the first cluster
 
@@ -670,7 +670,7 @@ Bind the services exposed from `cluster3` to the same name in `cluster1`.
     services, not for Services with Endpoints.
     {{< /warning >}}
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     kind: Service
     apiVersion: v1
@@ -684,13 +684,13 @@ Bind the services exposed from `cluster3` to the same name in `cluster1`.
         protocol: TCP
         port: 15444
     EOF
-    {{< /text >}}
+    ```
 
 1.  Create an egress gateways for `my-nginx.sample.svc.cluster.local` and for `nginx-error.sample.svc.cluster.local`,
     port 15444, redefine the destination rule for traffic directed to the egress gateway and create a new destination
     rule for traffic from the egress gateway to the third cluster:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: Gateway
@@ -806,11 +806,11 @@ Bind the services exposed from `cluster3` to the same name in `cluster1`.
               caCertificates: /etc/istio/example.com/certs/example.com.crt
               sni: nginx-error.sample.svc.cluster.local
     EOF
-    {{< /text >}}
+    ```
 
 1.  Define virtual services to direct traffic from the egress gateway to the external services:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -852,11 +852,11 @@ Bind the services exposed from `cluster3` to the same name in `cluster1`.
               number: 15444
           weight: 100
     EOF
-    {{< /text >}}
+    ```
 
 1.  Create a selector-less service for `nginx-error` in `sample` to handle DNS:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n sample -f - <<EOF
     kind: Service
     apiVersion: v1
@@ -869,11 +869,11 @@ Bind the services exposed from `cluster3` to the same name in `cluster1`.
         protocol: TCP
         port: 443
     EOF
-    {{< /text >}}
+    ```
 
 1.  Define a virtual service to direct the traffic from sidecars to the egress gateway for the `nginx-error` service:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n sample -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -894,19 +894,19 @@ Bind the services exposed from `cluster3` to the same name in `cluster1`.
             port:
               number: 15444
     EOF
-    {{< /text >}}
+    ```
 
 1.  Test accessing the `nginx-error.sample.svc.cluster.local` service from the first cluster:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://nginx-error.sample.svc.cluster.local | grep -o "<title>.*</title>"
     <title>Error</title>
-    {{< /text >}}
+    ```
 
 1.  Redefine a virtual service to direct the traffic from sidecars to the egress gateway for the `my-nginx.sample`
     service, to split the traffic 50:50 between the second and the third cluster:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n sample -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -934,11 +934,11 @@ Bind the services exposed from `cluster3` to the same name in `cluster1`.
               number: 15444
           weight: 50
     EOF
-    {{< /text >}}
+    ```
 
 1.  Send ten requests to ``my-nginx.sample.svc.cluster.local` service from the first cluster:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl -s --cacert /etc/sleep/tls/nginx.example.com.crt https://my-nginx.sample.svc.cluster.local | grep -o "<title>.*</title>"; done'
     <title>Welcome to nginx!</title>
     <title>Nginx reloaded!</title>
@@ -950,7 +950,7 @@ Bind the services exposed from `cluster3` to the same name in `cluster1`.
     <title>Nginx reloaded!</title>
     <title>Welcome to nginx!</title>
     <title>Welcome to nginx!</title>
-    {{< /text >}}
+    ```
 
 You have now the setting as shown in the diagram below:
 
@@ -984,7 +984,7 @@ Istio will deny all the unspecified access.
 
 1.   Create Istio service roles for read access to `helloworld` and `httpbin`.
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply  --context=$CTX_CLUSTER3 -n sample -f - <<EOF
     apiVersion: rbac.istio.io/v1alpha1
     kind: ServiceRole
@@ -1008,13 +1008,13 @@ Istio will deny all the unspecified access.
         - key: "destination.port"
           values: ["443"]
     EOF
-    {{< /text >}}
+    ```
 
 1.  Create role bindings to enable read access to the services according to the requirements of the application.
     `my-nginx` may be called from the private ingress gateway, `nginx-error` can also be called from the private ingress
     gateway and also from `sleep`. These role bindings forbid, for example, calls from `my-nginx` to `nginx-error`.
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER3 -n sample -f - <<EOF
     apiVersion: rbac.istio.io/v1alpha1
     kind: ServiceRoleBinding
@@ -1039,7 +1039,7 @@ Istio will deny all the unspecified access.
         kind: ServiceRole
         name: nginx-error-accessor
     EOF
-    {{< /text >}}
+    ```
 
 1.  Enable [Istio RBAC](/docs/concepts/security/#authorization) on the `sample` namespace.
 
@@ -1048,7 +1048,7 @@ Istio will deny all the unspecified access.
     The command below assumes that `sample` is the only namespace you enabled RBAC on.
     {{< /warning >}}
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER3 -f - <<EOF
     apiVersion: "rbac.istio.io/v1alpha1"
     kind: ClusterRbacConfig
@@ -1060,34 +1060,34 @@ Istio will deny all the unspecified access.
       inclusion:
         namespaces: [ sample ]
     EOF
-    {{< /text >}}
+    ```
 
 1.  Check that unauthorized access is denied. Send a request from `sleep` to `my-nginx`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -c sleep --context=$CTX_CLUSTER3 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://my-nginx.sample.svc.cluster.local
     curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to my-nginx.sample.svc.cluster.local:443
     command terminated with exit code 35
-    {{< /text >}}
+    ```
 
 1.  Check that `sleep` can call `nginx-error`, since it is allowed by the policy:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -c sleep --context=$CTX_CLUSTER3 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://nginx-error.sample.svc.cluster.local | grep -o "<title>.*</title>"
     <title>Error</title>
-    {{< /text >}}
+    ```
 
 1.  Check the services can be called from the first cluster as previously. Test accessing the
     `nginx-error.sample.svc.cluster.local` service from the first cluster:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://nginx-error.sample.svc.cluster.local | grep -o "<title>.*</title>"
     <title>Error</title>
-    {{< /text >}}
+    ```
 
 1.  Send ten requests to `my-nginx.sample.svc.cluster.local` service from the first cluster:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl -s --cacert /etc/sleep/tls/nginx.example.com.crt https://my-nginx.sample.svc.cluster.local | grep -o "<title>.*</title>"; done'
     <title>Welcome to nginx!</title>
     <title>Nginx reloaded!</title>
@@ -1099,7 +1099,7 @@ Istio will deny all the unspecified access.
     <title>Nginx reloaded!</title>
     <title>Welcome to nginx!</title>
     <title>Welcome to nginx!</title>
-    {{< /text >}}
+    ```
 
 ### Enable RBAC on the ingress gateway
 
@@ -1111,7 +1111,7 @@ Istio will deny all the unspecified access.
     Specify the RBAC policy that allows only the `c1` cluster to access `my-nginx.sample.svc.cluster.local` on port
     15444 of the istio-ingress gateway:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply  --context=$CTX_CLUSTER3 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: EnvoyFilter
@@ -1183,12 +1183,12 @@ Istio will deny all the unspecified access.
                                exact: spiffe://c4.example.com/istio-private-egressgateway
                stat_prefix: "tcp."
     EOF
-    {{< /text >}}
+    ```
 
 1.  Send ten requests to `my-nginx.sample.svc.cluster.local` service from the first cluster, as previously, and observe
     that the service is accessible to the first cluster.
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl -s --cacert /etc/sleep/tls/nginx.example.com.crt https://my-nginx.sample.svc.cluster.local | grep -o "<title>.*</title>"; done'
     <title>Welcome to nginx!</title>
     <title>Nginx reloaded!</title>
@@ -1200,14 +1200,14 @@ Istio will deny all the unspecified access.
     <title>Nginx reloaded!</title>
     <title>Welcome to nginx!</title>
     <title>Welcome to nginx!</title>
-    {{< /text >}}
+    ```
 
 1.  Check that the `nginx-error.sample.svc.cluster.local` service is blocked for access from the first cluster:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl --cacert /etc/sleep/tls/nginx.example.com.crt https://nginx-error.sample.svc.cluster.local | grep -o "<title>.*</title>"
     command terminated with exit code 35
-    {{< /text >}}
+    ```
 
 ## Cleanup
 
@@ -1222,109 +1222,109 @@ Istio will deny all the unspecified access.
     `sample` namespace.
     {{< /warning >}}
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete --context=$CTX_CLUSTER3 -n istio-system clusterrbacconfig default
-    {{< /text >}}
+    ```
 
 1.  Delete the service roles and service role bindings:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete --context=$CTX_CLUSTER3 -n sample servicerolebinding my-nginx-accessor nginx-error-accessor
     $ kubectl delete --context=$CTX_CLUSTER3 -n sample servicerole my-nginx-accessor nginx-error-accessor
-    {{< /text >}}
+    ```
 
 1.  Delete the Envoy's filter:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete envoyfilter private-ingress-rbac -n istio-private-gateways --context=$CTX_CLUSTER3
-    {{< /text >}}
+    ```
 
 ### Remove the exposure of the services in the second cluster:
 
-{{< text bash >}}
+```bash
 $ kubectl delete envoyfilter private-ingress-gateway-sni-verifier -n istio-private-gateways --context=$CTX_CLUSTER2
 $ kubectl delete virtualservice privately-exposed-services-my-nginx-sample -n istio-private-gateways --context=$CTX_CLUSTER2
 $ kubectl delete gateway istio-private-ingressgateway-my-nginx-sample -n istio-private-gateways --context=$CTX_CLUSTER2
-{{< /text >}}
+```
 
 ### Remove the exposure of the services in the third cluster:
 
-{{< text bash >}}
+```bash
 $ kubectl delete envoyfilter private-ingress-gateway-sni-verifier -n istio-private-gateways --context=$CTX_CLUSTER3
 $ kubectl delete virtualservice privately-exposed-services-my-nginx-sample privately-exposed-services-nginx-error-sample -n istio-private-gateways --context=$CTX_CLUSTER3
 $ kubectl delete gateway istio-private-ingressgateway-my-nginx-sample istio-private-ingressgateway-nginx-error-sample -n istio-private-gateways --context=$CTX_CLUSTER3
-{{< /text >}}
+```
 
 ### Remove the consumption of the services in the first cluster:
 
-{{< text bash >}}
+```bash
 $ kubectl delete virtualservice my-nginx-sample-c2 my-nginx-sample-c3 nginx-error-sample-c3 -n istio-private-gateways --context=$CTX_CLUSTER1
 $ kubectl delete gateway istio-private-egressgateway-my-nginx-sample-c2 istio-private-egressgateway-my-nginx-sample-c3 istio-private-egressgateway-nginx-error-sample-c3 -n istio-private-gateways --context=$CTX_CLUSTER1
 $ kubectl delete service c2-example-com c3-example-com -n istio-private-gateways --context=$CTX_CLUSTER1
 $ kubectl delete virtualservice my-nginx-sample nginx-error-sample -n sample --context=$CTX_CLUSTER1
 $ kubectl delete service my-nginx nginx-error -n sample --context=$CTX_CLUSTER1
 $ kubectl delete destinationrule istio-private-egressgateway c2-example-com c3-example-com -n istio-private-gateways --context=$CTX_CLUSTER1
-{{< /text >}}
+```
 
 ### Delete the sleep apps:
 
 1.  Delete the sleep secrets
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete secret sleep-secret --context=$CTX_CLUSTER1
     $ kubectl delete secret sleep-secret --context=$CTX_CLUSTER2
     $ kubectl delete secret sleep-secret --context=$CTX_CLUSTER3
-    {{< /text >}}
+    ```
 
 1.  Undeploy the services:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER1
     $ kubectl delete -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER2
     $ kubectl delete -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
-    {{< /text >}}
+    ```
 
 ### Undeploy the Nginx services
 
 1.  Delete the destination rules:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete destinationrule my-nginx --context=$CTX_CLUSTER2 -n sample
     $ kubectl delete destinationrule my-nginx nginx-error --context=$CTX_CLUSTER3 -n sample
-    {{< /text >}}
+    ```
 
 1.  Delete the `Nginx` secrets and configuration maps:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete secret nginxsecret --context=$CTX_CLUSTER2 -n sample
     $ kubectl delete configmap nginxconfigmap --context=$CTX_CLUSTER2 -n sample
     $ kubectl delete secret nginxsecret --context=$CTX_CLUSTER3 -n sample
     $ kubectl delete configmap nginxconfigmap --context=$CTX_CLUSTER3 -n sample
     $ kubectl delete secret nginxerrorsecret --context=$CTX_CLUSTER3 -n sample
     $ kubectl delete configmap nginxerrorconfigmap --context=$CTX_CLUSTER3 -n sample
-    {{< /text >}}
+    ```
 
 1.  Undeploy the `Nginx` sample services.
 
-    {{< text bash >}}
+    ```bash
     $ cat @samples/https/nginx-app.yaml@ | sed 's/name: https/name: tls/g' | kubectl delete -n sample --context=$CTX_CLUSTER2 -f -
     $ cat @samples/https/nginx-app.yaml@ | sed 's/name: https/name: tls/g' | kubectl delete -n sample --context=$CTX_CLUSTER3 -f -
     $ cat @samples/https/nginx-app.yaml@ | sed 's/name: https/name: tls/g' | sed 's/name: my-nginx/name: nginx-error/g' | sed 's/secretName: nginxsecret/secretName: nginxerrorsecret/g' | sed 's/name: nginxconfigmap/name: nginxerrorconfigmap/g' | sed 's/app: nginx/app: nginx-error/g' | kubectl delete -n sample --context=$CTX_CLUSTER3 -f -
-    {{< /text >}}
+    ```
 
 1.  Remove the `sample` namespaces in all the three clusters:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete namespace sample --context=$CTX_CLUSTER1
     $ kubectl delete namespace sample --context=$CTX_CLUSTER2
     $ kubectl delete namespace sample --context=$CTX_CLUSTER3
-    {{< /text >}}
+    ```
 
 ### Delete the temporary files:
 
-{{< text bash >}}
+```bash
 $ rm ./nginx1.crt ./nginx1.key ./nginx2.crt ./nginx2.key ./nginx-error.crt ./nginx-error.key ./default2.conf ./default-error.conf ./nginx.example.com.crt ./nginx.example.com.key
-{{< /text >}}
+```
 
 ### Delete the private gateways
 

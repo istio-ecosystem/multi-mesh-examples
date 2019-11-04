@@ -22,25 +22,25 @@ prepending it with a prefix string. The services differ only by their prefixes, 
 
 1.  Create a namespace for a TCP service in the second cluster and label it for Istio sidecar injection:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl create --context=$CTX_CLUSTER2 namespace sample
     $ kubectl label --context=$CTX_CLUSTER2 namespace sample istio-injection=enabled
     namespace/sample created
     namespace/sample labeled
-    {{< /text >}}
+    ```
 
 1.  Deploy the `tcp-echo` sample service, version `v1`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply -n sample -l app=tcp-echo,version=v1 --context=$CTX_CLUSTER2 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-echo.yaml
     $ kubectl apply -n sample -l service=tcp-echo --context=$CTX_CLUSTER2 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-echo.yaml
     deployment.apps/tcp-echo-v1 created
     service/tcp-echo created
-    {{< /text >}}
+    ```
 
 1.  Create a destination rule for `tcp-echo`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER2 -n sample -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
@@ -52,31 +52,31 @@ prepending it with a prefix string. The services differ only by their prefixes, 
         tls:
           mode: ISTIO_MUTUAL
     EOF
-    {{< /text >}}
+    ```
 
 ### Deploy two TCP services in the third cluster
 
 1.  Create a namespace for a TCP service in the second cluster and label it for Istio sidecar injection:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl create --context=$CTX_CLUSTER3 namespace sample
     $ kubectl label --context=$CTX_CLUSTER3 namespace sample istio-injection=enabled
     namespace/sample created
     namespace/sample labeled
-    {{< /text >}}
+    ```
 
 1.  Deploy the `tcp-echo` sample service, version `v2`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply -n sample -l app=tcp-echo,version=v2 --context=$CTX_CLUSTER3 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-echo.yaml
     $ kubectl apply -n sample -l service=tcp-echo --context=$CTX_CLUSTER3 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-echo.yaml
     deployment.apps/tcp-echo-v2 created
     service/tcp-echo created
-    {{< /text >}}
+    ```
 
 1.  Create a destination rule for `tcp-echo`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER3 -n sample -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
@@ -88,19 +88,19 @@ prepending it with a prefix string. The services differ only by their prefixes, 
         tls:
           mode: ISTIO_MUTUAL
     EOF
-    {{< /text >}}
+    ```
 
 1.  Deploy the `tcp-hello-echo` sample service:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply -n sample --context=$CTX_CLUSTER3 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-hello-echo.yaml
     deployment.apps/tcp-hello-echo created
     service/tcp-hello-echo created
-    {{< /text >}}
+    ```
 
 1.  Create a destination rule for `tcp-hello-echo`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER3 -n sample -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
@@ -112,22 +112,22 @@ prepending it with a prefix string. The services differ only by their prefixes, 
         tls:
           mode: ISTIO_MUTUAL
     EOF
-    {{< /text >}}
+    ```
 
 ### Deploy sleep samples in all the clusters and test that the services are accessed in each cluster, locally
 
 1.  In each of the clusters, deploy the [sleep]({{< github_tree >}}/samples/sleep) sample app to use as a test source
     for sending requests. (If you already have the sleep app deployed, no need to delete it)
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER1
     $ kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER2
     $ kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER3
-    {{< /text >}}
+    ```
 
 1.  Wait until the `sleep` apps are running and the previous versions, if any, are terminated:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl get pod -l app=sleep --context=$CTX_CLUSTER1
     $ kubectl get pod -l app=sleep --context=$CTX_CLUSTER2
     $ kubectl get pod -l app=sleep --context=$CTX_CLUSTER3
@@ -137,28 +137,28 @@ prepending it with a prefix string. The services differ only by their prefixes, 
     sleep-666475687f-hsnzx   2/2     Running   0          4m6s
     NAME                     READY   STATUS    RESTARTS   AGE
     sleep-666475687f-h6t7d   2/2     Running   0          4m6s
-    {{< /text >}}
+    ```
 
 1.  Test accessing the `tcp-echo` service in the second cluster locally:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER2) -c sleep --context=$CTX_CLUSTER2 -- sh -c 'echo world | nc tcp-echo.sample.svc.cluster.local 9000'
     one world
-    {{< /text >}}
+    ```
 
 1.  Test accessing the `tcp-echo` service in the third cluster locally:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -c sleep --context=$CTX_CLUSTER3 -- sh -c 'echo world | nc tcp-echo.sample.svc.cluster.local 9000'
     two world
-    {{< /text >}}
+    ```
 
 1.  Test accessing the `tcp-hello-echo` service in the third cluster locally:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -c sleep --context=$CTX_CLUSTER3 -- sh -c 'echo world | nc tcp-hello-echo.sample.svc.cluster.local 9000'
     hello world
-    {{< /text >}}
+    ```
 
 After completing the steps until now, you get the following setting (the `sleep` containers in the second and third
 clusters omitted):
@@ -186,7 +186,7 @@ sections, step 3. You need to expose more services, add more ports to the defini
 
 1.  Define an ingress `Gateway`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER2 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: Gateway
@@ -208,11 +208,11 @@ sections, step 3. You need to expose more services, add more ports to the defini
         hosts:
         - "*"
     EOF
-    {{< /text >}}
+    ```
 
 1.  Configure routing to `tcp-echo`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER2 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -232,15 +232,15 @@ sections, step 3. You need to expose more services, add more ports to the defini
             port:
               number: 9000
     EOF
-    {{< /text >}}
+    ```
 
 1.  Test your configuration by accessing the exposed service. The `openssl` command below uses the certificate and the
     private key of `cluster1`:
 
-    {{< text bash >}}
+    ```bash
     $ echo world | openssl s_client -host $CLUSTER2_INGRESS_HOST -port 31400 -cert c1.example.com.crt -key c1.example.com.key -CAfile example.com.crt -quiet
     one world
-    {{< /text >}}
+    ```
 
     Kill the command above by pressing `Ctrl-C`.
 
@@ -252,7 +252,7 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 1.  Create a Kubernetes service for `c2.example.com` since it is not an existing hostname. In the real life, you
     would use the real hostname of your cluster.
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     kind: Service
     apiVersion: v1
@@ -266,11 +266,11 @@ service in `cluster1` is different from the name of the service in `cluster2`.
         protocol: TCP
         port: 31400
     EOF
-    {{< /text >}}
+    ```
 
 1.  Create a destination rule for `c2.example.com`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
@@ -293,12 +293,12 @@ service in `cluster1` is different from the name of the service in `cluster2`.
             caCertificates: /etc/istio/example.com/certs/example.com.crt
             sni: c2.example.com
     EOF
-    {{< /text >}}
+    ```
 
 1.  To handle DNS, create a Kubernetes service for `echo.default.svc.cluster.local`, port 9001. Note that the port in
     in the consuming cluster can be different from the port in the exposing cluster.
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     kind: Service
     apiVersion: v1
@@ -310,11 +310,11 @@ service in `cluster1` is different from the name of the service in `cluster2`.
         protocol: TCP
         port: 9001
     EOF
-    {{< /text >}}
+    ```
 
 1.  Create a Kubernetes service for `echo-c2.default.svc.cluster.local`, to be used by the egress gateway:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     kind: Service
     apiVersion: v1
@@ -326,12 +326,12 @@ service in `cluster1` is different from the name of the service in `cluster2`.
         protocol: TCP
         port: 31400
     EOF
-    {{< /text >}}
+    ```
 
 1.  Create an egress `Gateway` for `echo-c2.default.svc.cluster.local`, port 31400, and a destination rule for
     traffic directed to the egress gateway.
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: Gateway
@@ -371,11 +371,11 @@ service in `cluster1` is different from the name of the service in `cluster2`.
               mode: ISTIO_MUTUAL
               sni: echo-c2.default.svc.cluster.local
     EOF
-    {{< /text >}}
+    ```
 
 1.  Define a virtual service to direct traffic from the egress gateway to the external service:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -396,11 +396,11 @@ service in `cluster1` is different from the name of the service in `cluster2`.
               number: 31400
           weight: 100
     EOF
-    {{< /text >}}
+    ```
 
 1.  Direct the traffic destined to `echo.default.svc.cluster.local` to the private egress gateway:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -420,20 +420,20 @@ service in `cluster1` is different from the name of the service in `cluster2`.
               number: 31400
           weight: 100
     EOF
-    {{< /text >}}
+    ```
 
 1.  Test your configuration by accessing the exposed service by the `nc` command:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'echo world | nc echo 9001'
     one world
-    {{< /text >}}
+    ```
 
 ### Expose the tcp services in the third cluster
 
 1.  Define an ingress `Gateway`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER3 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: Gateway
@@ -466,11 +466,11 @@ service in `cluster1` is different from the name of the service in `cluster2`.
         hosts:
         - "*"
     EOF
-    {{< /text >}}
+    ```
 
 1.  Configure routing to `tcp-echo` and `tcp-hello-echo`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER3 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -497,25 +497,25 @@ service in `cluster1` is different from the name of the service in `cluster2`.
             port:
               number: 9000
     EOF
-    {{< /text >}}
+    ```
 
 1.  Test your configuration by accessing `tcp-echo` The `openssl` command below uses the certificate and the
     private key of `cluster1`:
 
-    {{< text bash >}}
+    ```bash
     $ echo world | openssl s_client -host $CLUSTER3_INGRESS_HOST -port 31400 -cert c1.example.com.crt -key c1.example.com.key -CAfile example.com.crt -quiet
     two world
-    {{< /text >}}
+    ```
 
     Kill the command above by pressing `Ctrl-C`.
 
 1.  Test your configuration by accessing `tcp-hello-echo`. The `openssl` command below uses the certificate and the
     private key of `cluster1`:
 
-    {{< text bash >}}
+    ```bash
     $ echo world | openssl s_client -host $CLUSTER3_INGRESS_HOST -port 31401 -cert c1.example.com.crt -key c1.example.com.key -CAfile example.com.crt -quiet
     hello world
-    {{< /text >}}
+    ```
 
     Kill the command above by pressing `Ctrl-C`.
 
@@ -527,7 +527,7 @@ Bind `tcp-echo` exposed from `cluster3` as `echo.default.svc.cluster.local` in `
     would use the real hostname of your cluster. You have to create a service per port, otherwise Istio will route
     the requests to all the ports of the service.
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     kind: Service
     apiVersion: v1
@@ -541,11 +541,11 @@ Bind `tcp-echo` exposed from `cluster3` as `echo.default.svc.cluster.local` in `
         protocol: TCP
         port: 31400
     EOF
-    {{< /text >}}
+    ```
 
 1.  Create a destination rule for `c3.example.com`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
@@ -568,11 +568,11 @@ Bind `tcp-echo` exposed from `cluster3` as `echo.default.svc.cluster.local` in `
             caCertificates: /etc/istio/example.com/certs/example.com.crt
             sni: c3.example.com
     EOF
-    {{< /text >}}
+    ```
 
 1.  Create a Kubernetes service for `echo-c3.default.svc.cluster.local`, to be used by the egress gateway:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     kind: Service
     apiVersion: v1
@@ -584,12 +584,12 @@ Bind `tcp-echo` exposed from `cluster3` as `echo.default.svc.cluster.local` in `
         protocol: TCP
         port: 31400
     EOF
-    {{< /text >}}
+    ```
 
 1.  Create an egress `Gateway` to handle `echo-c3.default.svc.cluster.local`, port 31400 and update the destination rule
     you created previously to handle traffic to it.
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: Gateway
@@ -639,11 +639,11 @@ Bind `tcp-echo` exposed from `cluster3` as `echo.default.svc.cluster.local` in `
               mode: ISTIO_MUTUAL
               sni: echo-c3.default.svc.cluster.local
     EOF
-    {{< /text >}}
+    ```
 
 1.  Define a virtual service to direct traffic from the egress gateway to the external service:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -664,12 +664,12 @@ Bind `tcp-echo` exposed from `cluster3` as `echo.default.svc.cluster.local` in `
               number: 31400
           weight: 100
     EOF
-    {{< /text >}}
+    ```
 
 1.  Direct the traffic destined to `echo.default.svc.cluster.local` to the private egress gateway, while load balancing
     50:50 between `tcp-echo` in the second and third clusters:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -695,11 +695,11 @@ Bind `tcp-echo` exposed from `cluster3` as `echo.default.svc.cluster.local` in `
               number: 31400
           weight: 50
     EOF
-    {{< /text >}}
+    ```
 
 1.  Test your configuration by accessing the exposed service by the `nc` command:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do date | nc echo 9001; done'
     one Mon Nov  4 04:20:21 UTC 2019
     two Mon Nov  4 04:20:21 UTC 2019
@@ -711,7 +711,7 @@ Bind `tcp-echo` exposed from `cluster3` as `echo.default.svc.cluster.local` in `
     two Mon Nov  4 04:20:24 UTC 2019
     one Mon Nov  4 04:20:24 UTC 2019
     one Mon Nov  4 04:20:24 UTC 2019
-    {{< /text >}}
+    ```
 
 ### Consume TCP hello echo from the third cluster in the first cluster
 
@@ -719,7 +719,7 @@ Bind `tcp-hello-echo` exposed from the third cluster as `tcp-hello-echo.default.
 
 1.  Create a Kubernetes service for `c3.example.com`, port 31401:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     kind: Service
     apiVersion: v1
@@ -733,11 +733,11 @@ Bind `tcp-hello-echo` exposed from the third cluster as `tcp-hello-echo.default.
         protocol: TCP
         port: 31401
     EOF
-    {{< /text >}}
+    ```
 
 1.  Create a destination rule for `c3.example.com`, port 31401:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
@@ -760,11 +760,11 @@ Bind `tcp-hello-echo` exposed from the third cluster as `tcp-hello-echo.default.
             caCertificates: /etc/istio/example.com/certs/example.com.crt
             sni: c3.example.com
     EOF
-    {{< /text >}}
+    ```
 
 1.  To handle DNS, create a Kubernetes service for `tcp-hello-echo.default.svc.cluster.local`, port 9001.
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     kind: Service
     apiVersion: v1
@@ -776,11 +776,11 @@ Bind `tcp-hello-echo` exposed from the third cluster as `tcp-hello-echo.default.
         protocol: TCP
         port: 9001
     EOF
-    {{< /text >}}
+    ```
 
 1.  Create a Kubernetes service for `tcp-hello-echo-c3.default.svc.cluster.local`, to be used by the egress gateway:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     kind: Service
     apiVersion: v1
@@ -792,12 +792,12 @@ Bind `tcp-hello-echo` exposed from the third cluster as `tcp-hello-echo.default.
         protocol: TCP
         port: 31401
     EOF
-    {{< /text >}}
+    ```
 
 1.  Create the egress `Gateway` items to handle `tcp-hello-echo-c3.default.svc.cluster.local`, port 31401, and update
     the destination rule you created previously to handle the traffic to the service.
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: Gateway
@@ -857,11 +857,11 @@ Bind `tcp-hello-echo` exposed from the third cluster as `tcp-hello-echo.default.
               mode: ISTIO_MUTUAL
               sni: tcp-hello-echo-c3.default.svc.cluster.local
     EOF
-    {{< /text >}}
+    ```
 
 1.  Define a virtual service to direct traffic from the egress gateway to the external service:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -882,11 +882,11 @@ Bind `tcp-hello-echo` exposed from the third cluster as `tcp-hello-echo.default.
               number: 31401
           weight: 100
     EOF
-    {{< /text >}}
+    ```
 
 1.  Direct the traffic destined to `tcp-hello-echo.default.svc.cluster.local` to the private egress gateway:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
@@ -906,18 +906,18 @@ Bind `tcp-hello-echo` exposed from the third cluster as `tcp-hello-echo.default.
               number: 31401
           weight: 100
     EOF
-    {{< /text >}}
+    ```
 
 1.  Test your configuration by accessing the exposed service by the `nc` command:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'echo world | nc tcp-hello-echo 9001'
     hello world
-    {{< /text >}}
+    ```
 
 1.  Check that the `tcp-echo` services are still accessible:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do date | nc echo 9001; done'
     one Mon Nov  4 04:20:21 UTC 2019
     two Mon Nov  4 04:20:21 UTC 2019
@@ -929,7 +929,7 @@ Bind `tcp-hello-echo` exposed from the third cluster as `tcp-hello-echo.default.
     two Mon Nov  4 04:20:24 UTC 2019
     one Mon Nov  4 04:20:24 UTC 2019
     one Mon Nov  4 04:20:24 UTC 2019
-    {{< /text >}}
+    ```
 
 You have now the setting as shown in the diagram below:
 
@@ -963,7 +963,7 @@ Istio will deny all the unspecified access.
 
 1.   Create Istio service roles for read access to `helloworld` and `httpbin`.
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply  --context=$CTX_CLUSTER3 -n sample -f - <<EOF
     apiVersion: rbac.istio.io/v1alpha1
     kind: ServiceRole
@@ -987,13 +987,13 @@ Istio will deny all the unspecified access.
         - key: "destination.port"
           values: ["9000"]
     EOF
-    {{< /text >}}
+    ```
 
 1.  Create role bindings to enable read access to the services according to the requirements of the application.
     `tcp-echo` may be called from the private ingress gateway, `tcp-hello-echo` can also be called from the private ingress
     gateway and also from `sleep`. These role bindings forbid, for example, calls from `tcp-echo` to `tcp-hello-echo`.
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER3 -n sample -f - <<EOF
     apiVersion: rbac.istio.io/v1alpha1
     kind: ServiceRoleBinding
@@ -1018,7 +1018,7 @@ Istio will deny all the unspecified access.
         kind: ServiceRole
         name: tcp-hello-echo-accessor
     EOF
-    {{< /text >}}
+    ```
 
 1.  Enable [Istio RBAC](/docs/concepts/security/#authorization) on the `sample` namespace.
 
@@ -1027,7 +1027,7 @@ Istio will deny all the unspecified access.
     The command below assumes that `sample` is the only namespace you enabled RBAC on.
     {{< /warning >}}
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply --context=$CTX_CLUSTER3 -f - <<EOF
     apiVersion: "rbac.istio.io/v1alpha1"
     kind: ClusterRbacConfig
@@ -1039,35 +1039,35 @@ Istio will deny all the unspecified access.
       inclusion:
         namespaces: [ sample ]
     EOF
-    {{< /text >}}
+    ```
 
 1.  Check that unauthorized access is denied. Send a request from `sleep` to `tcp-echo`:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -c sleep --context=$CTX_CLUSTER3 -- sh -c 'echo world | nc tcp-echo.sample.svc.cluster.local 9000'
-    {{< /text >}}
+    ```
 
     This time no output is produced.
 
 1.  Check that `sleep` can call `tcp-hello-echo`, since it is allowed by the policy:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -c sleep --context=$CTX_CLUSTER3 -- sh -c 'echo world | nc tcp-hello-echo.sample.svc.cluster.local 9000'
     hello world
-    {{< /text >}}
+    ```
 
 1.  Check the services can be called from the first cluster as previously. Test accessing the
     `tcp-hello-echo.sample.svc.cluster.local` service from the first cluster:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'echo world | nc tcp-hello-echo 9001'
     hello world
-    {{< /text >}}
+    ```
 
 1.  Send ten requests to `echo.sample.svc.cluster.local` service from the first cluster, they should be accessed as
     previously:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do date | nc echo 9001; done'
     one Mon Nov  4 04:20:21 UTC 2019
     two Mon Nov  4 04:20:21 UTC 2019
@@ -1079,7 +1079,7 @@ Istio will deny all the unspecified access.
     two Mon Nov  4 04:20:24 UTC 2019
     one Mon Nov  4 04:20:24 UTC 2019
     one Mon Nov  4 04:20:24 UTC 2019
-    {{< /text >}}
+    ```
 
 ### Enable RBAC on the ingress gateway
 
@@ -1092,7 +1092,7 @@ Istio will deny all the unspecified access.
     cluster to access port 31401. Here access specified is per port, in this case port uniquely identifies an exposed
     TCP service.
 
-    {{< text bash >}}
+    ```bash
     $ kubectl apply  --context=$CTX_CLUSTER3 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: EnvoyFilter
@@ -1162,72 +1162,72 @@ Istio will deny all the unspecified access.
                                exact: spiffe://c4.example.com/istio-private-egressgateway
                stat_prefix: "tcp."
     EOF
-    {{< /text >}}
+    ```
 
 1.  Perform the following tests by the `curl` command using identities of the `c1` and the `c4` clusters:
 
     1.  Verify that `tcp-echo` is allowed for the `c1` cluster:
 
-    {{< text bash >}}
+    ```bash
     $ echo world | openssl s_client -host $CLUSTER3_INGRESS_HOST -port 31400 -cert c1.example.com.crt -key c1.example.com.key -CAfile example.com.crt -quiet
     depth=1 O = example Inc., CN = example.com
     verify return:1
     depth=0 O = "example Inc., department 3", CN = c3.example.com
     verify return:1
     two world
-    {{< /text >}}
+    ```
 
     Kill the command above by pressing `Ctrl-C`.
 
     1.  Verify that `tcp-echo` is denied for the `c4` cluster:
 
-    {{< text bash >}}
+    ```bash
     $ echo world | openssl s_client -host $CLUSTER3_INGRESS_HOST -port 31400 -cert c4.example.com.crt -key c4.example.com.key -CAfile example.com.crt -quiet
     depth=1 O = example Inc., CN = example.com
     verify return:1
     depth=0 O = "example Inc., department 3", CN = c3.example.com
     verify return:1
-    {{< /text >}}
+    ```
 
     Note that the `two world` message is not printed.
 
     1.  Verify that `tcp-hello-echo` is denied for the `c1` cluster:
 
-    {{< text bash >}}
+    ```bash
     $ echo world | openssl s_client -host $CLUSTER3_INGRESS_HOST -port 31401 -cert c1.example.com.crt -key c1.example.com.key -CAfile example.com.crt -quiet
     depth=1 O = example Inc., CN = example.com
     verify return:1
     depth=0 O = "example Inc., department 3", CN = c3.example.com
     verify return:1
-    {{< /text >}}
+    ```
 
     Note that the `hello world` message is not printed.
 
     1.  Verify that `tcp-hello-echo` is allowed for the `c4` cluster:
 
-    {{< text bash >}}
+    ```bash
     $ echo world | openssl s_client -host $CLUSTER3_INGRESS_HOST -port 31401 -cert c4.example.com.crt -key c4.example.com.key -CAfile example.com.crt -quiet
     depth=1 O = example Inc., CN = example.com
     verify return:1
     depth=0 O = "example Inc., department 3", CN = c3.example.com
     verify return:1
     hello world
-    {{< /text >}}
+    ```
 
     Kill the command above by pressing `Ctrl-C`.
 
 1.  Check the services can be called from the first cluster as previously. Test accessing the
     `tcp-hello-echo.sample.svc.cluster.local` service from the first cluster:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'echo world | nc tcp-hello-echo 9001'
     hello world
-    {{< /text >}}
+    ```
 
 1.  Send ten requests to `echo.sample.svc.cluster.local` service from the first cluster, they should be accessed as
     previously:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do date | nc echo 9001; done'
     one Mon Nov  4 04:20:21 UTC 2019
     two Mon Nov  4 04:20:21 UTC 2019
@@ -1239,7 +1239,7 @@ Istio will deny all the unspecified access.
     two Mon Nov  4 04:20:24 UTC 2019
     one Mon Nov  4 04:20:24 UTC 2019
     one Mon Nov  4 04:20:24 UTC 2019
-    {{< /text >}}
+    ```
 
 ## Cleanup
 
@@ -1254,26 +1254,26 @@ Istio will deny all the unspecified access.
     `sample` namespace.
     {{< /warning >}}
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete --context=$CTX_CLUSTER3 -n istio-system clusterrbacconfig default
-    {{< /text >}}
+    ```
 
 1.  Delete the service roles and service role bindings:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete --context=$CTX_CLUSTER3 -n sample servicerolebinding tcp-echo-accessor tcp-hello-echo-accessor
     $ kubectl delete --context=$CTX_CLUSTER3 -n sample servicerole tcp-echo-accessor tcp-hello-echo-accessor
-    {{< /text >}}
+    ```
 
 1.  Delete the Envoy's filter:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete envoyfilter private-ingress-rbac -n istio-private-gateways --context=$CTX_CLUSTER3
-    {{< /text >}}
+    ```
 
 ### Delete consumption of the services in the first cluster
 
-{{< text bash >}}
+```bash
 $ kubectl delete --context=$CTX_CLUSTER1 virtualservice echo-c2 echo-c3 tcp-hello-echo-c3 -n istio-private-gateways
 $ kubectl delete --context=$CTX_CLUSTER1 virtualservice echo tcp-hello-echo
 $ kubectl delete --context=$CTX_CLUSTER1 destinationrule istio-private-egressgateway -n istio-private-gateways
@@ -1281,74 +1281,74 @@ $ kubectl delete --context=$CTX_CLUSTER1 gateway istio-private-egressgateway-ech
 $ kubectl delete --context=$CTX_CLUSTER1 destinationrule c2-example-com-31400 c3-example-com-31400 -n istio-private-gateways
 $ kubectl delete --context=$CTX_CLUSTER1 service c2-example-com-31400 c3-example-com-31400 -n istio-private-gateways
 $ kubectl delete --context=$CTX_CLUSTER1 service echo echo-c2 echo-c3 tcp-hello-echo tcp-hello-echo-c3
-{{< /text >}}
+```
 
 ### Delete exposure of the services in the second cluster
 
-{{< text bash >}}
+```bash
 $ kubectl delete --context=$CTX_CLUSTER2 virtualservice privately-exposed-services -n istio-private-gateways
 $ kubectl delete --context=$CTX_CLUSTER2 gateway istio-private-ingressgateway -n istio-private-gateways
-{{< /text >}}
+```
 
 ### Delete exposure of the services in the third cluster
 
-{{< text bash >}}
+```bash
 $ kubectl delete --context=$CTX_CLUSTER3 virtualservice privately-exposed-services -n istio-private-gateways
 $ kubectl delete --context=$CTX_CLUSTER3 gateway istio-private-ingressgateway -n istio-private-gateways
-{{< /text >}}
+```
 
 ### Delete the sleep apps:
 
 Undeploy the services:
 
-{{< text bash >}}
+```bash
 $ kubectl delete -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER1
 $ kubectl delete -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER2
 $ kubectl delete -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
-{{< /text >}}
+```
 
 ### Undeploy the TCP service in the second cluster
 
 1.  Undeploy the service:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete -n sample -l service=tcp-echo --context=$CTX_CLUSTER2 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-echo.yaml
     $ kubectl delete -n sample -l app=tcp-echo,version=v1 --context=$CTX_CLUSTER2 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-echo.yaml
-    {{< /text >}}
+    ```
 
 1.  Delete the destination rule:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete destinationrule tcp-echo --context=$CTX_CLUSTER2 -n sample
-    {{< /text >}}
+    ```
 
 1.  Delete the `sample` namespace:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete namespace sample --context=$CTX_CLUSTER2
-    {{< /text >}}
+    ```
 
 ### Undeploy the TCP services in the third cluster
 
 1.  Undeploy the services:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete -n sample -l service=tcp-echo --context=$CTX_CLUSTER3 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-echo.yaml
     $ kubectl delete -n sample -l app=tcp-echo,version=v2 --context=$CTX_CLUSTER3 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-echo.yaml
     $ kubectl apply -n sample --context=$CTX_CLUSTER3 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-hello-echo.yaml
-    {{< /text >}}
+    ```
 
 1.  Delete the destination rules:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete destinationrule tcp-echo tcp-hello-echo --context=$CTX_CLUSTER3 -n sample
-    {{< /text >}}
+    ```
 
 1.  Delete the `sample` namespace:
 
-    {{< text bash >}}
+    ```bash
     $ kubectl delete namespace sample --context=$CTX_CLUSTER3
-    {{< /text >}}
+    ```
 
 ### Delete the private gateways
 
