@@ -1,7 +1,7 @@
 ### Prerequisites for three clusters
 
-See [Prerequisites for three clusters](/docs/examples/multimesh/multimesh-common-setup/#prerequisites-for-three-clusters)
-in [common multi-mesh setup](/docs/examples/multimesh/multimesh-common-setup).
+See [Prerequisites for three clusters](../common-setup/#prerequisites-for-three-clusters)
+in [common multi-mesh setup](../common-setup).
 
 ## Initial setup
 
@@ -161,7 +161,7 @@ clusters omitted):
 
 ## Perform one-time setup of private gateways
 
-Follow the instructions in the [Setup](/docs/examples/multimesh/multimesh-common-setup/#setup) section of [common multi-mesh setup](/docs/examples/multimesh/multimesh-common-setup).
+Follow the instructions in the [Setup](../common-setup/#setup) section of [common multi-mesh setup](../common-setup).
 
 Once you finish the instructions above, you get the following setting:
 
@@ -172,9 +172,9 @@ Once you finish the instructions above, you get the following setting:
 
 In the following sections you expose the service on two pre-defined ports, 31400 and 31401. The ports were defined in the
 private ingress gateway's configurations in the
-[Deploy a private ingress gateway in the second cluster](/docs/examples/multimesh/multimesh-common-setup/#deploy-a-private-ingress-gateway-in-the-second-cluster)
+[Deploy a private ingress gateway in the second cluster](../common-setup/#deploy-a-private-ingress-gateway-in-the-second-cluster)
 and in the
-[Deploy a private ingress gateway in the third cluster](/docs/examples/multimesh/multimesh-common-setup/#deploy-a-private-ingress-gateway-in-the-third-cluster)
+[Deploy a private ingress gateway in the third cluster](../common-setup/#deploy-a-private-ingress-gateway-in-the-third-cluster)
 sections, step 3. You need to expose more services, add more ports to the definitions of the ingress gateways.
 
 ### Expose the tcp service in the second cluster
@@ -1348,4 +1348,4 @@ kubectl delete -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER3
 
 ### Delete the private gateways
 
-Follow the instructions in the [Cleenup](/docs/examples/multimesh/multimesh-common-setup/#cleanup) section of [common multi-mesh setup](/docs/examples/multimesh/multimesh-common-setup).
+Follow the instructions in the [Cleenup](../common-setup/#cleanup) section of [common multi-mesh setup](../common-setup).
