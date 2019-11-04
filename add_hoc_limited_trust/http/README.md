@@ -9,9 +9,9 @@ In each of the clusters, deploy the [sleep]({{< github_tree >}}/samples/sleep) s
 sending requests.
 
 ```bash
-$ kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER1
-$ kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER2
-$ kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
+kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER1
+kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER2
+kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
 ```
 
 ## Deploy hello world samples in the second and third clusters
@@ -21,21 +21,21 @@ $ kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
 1.  Create a `sample` namespace with a sidecar auto-injection label:
 
     ```bash
-    $ kubectl create --context=$CTX_CLUSTER2 ns sample
-    $ kubectl label --context=$CTX_CLUSTER2 namespace sample istio-injection=enabled
+    kubectl create --context=$CTX_CLUSTER2 ns sample
+    kubectl label --context=$CTX_CLUSTER2 namespace sample istio-injection=enabled
     ```
 
 1.  Deploy `helloworld v2`:
 
     ```bash
-    $ kubectl create --context=$CTX_CLUSTER2 -f @samples/helloworld/helloworld.yaml@ -l app=helloworld -n sample
-    $ kubectl create --context=$CTX_CLUSTER2 -f @samples/helloworld/helloworld.yaml@ -l version=v2 -n sample
+    kubectl create --context=$CTX_CLUSTER2 -f @samples/helloworld/helloworld.yaml@ -l app=helloworld -n sample
+    kubectl create --context=$CTX_CLUSTER2 -f @samples/helloworld/helloworld.yaml@ -l version=v2 -n sample
     ```
 
 1.  Create a destination rule for `helloworld`:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER2 -n sample -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER2 -n sample -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
     metadata:
@@ -55,7 +55,7 @@ $ kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
 1.  Confirm `helloworld v2` is running:
 
     ```bash
-    $ kubectl get po --context=$CTX_CLUSTER2 -n sample
+    kubectl get po --context=$CTX_CLUSTER2 -n sample
     NAME                             READY     STATUS    RESTARTS   AGE
     helloworld-v2-7dd57c44c4-f56gq   2/2       Running   0          35s
     ```
@@ -63,7 +63,7 @@ $ kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
 1.  Check that the service is accessible with the cluster. Send a GET request from `sleep` to `helloworld`:
 
     ```bash
-    $  kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER2 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER2 -n default -c sleep -- curl helloworld.sample.svc.cluster.local:5000/hello -w "\nResponse code: %{http_code}\n"
+     kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER2 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER2 -n default -c sleep -- curl helloworld.sample.svc.cluster.local:5000/hello -w "\nResponse code: %{http_code}\n"
     Hello version: v2, instance: helloworld-v2-6cd449dff4-n7s48
 
     Response code: 200
@@ -74,21 +74,21 @@ $ kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
 1.  Create a `sample` namespace with a sidecar auto-injection label:
 
     ```bash
-    $ kubectl create --context=$CTX_CLUSTER3 ns sample
-    $ kubectl label --context=$CTX_CLUSTER3 namespace sample istio-injection=enabled
+    kubectl create --context=$CTX_CLUSTER3 ns sample
+    kubectl label --context=$CTX_CLUSTER3 namespace sample istio-injection=enabled
     ```
 
 1.  Deploy `helloworld v1`:
 
     ```bash
-    $ kubectl create --context=$CTX_CLUSTER3 -f @samples/helloworld/helloworld.yaml@ -l app=helloworld -n sample
-    $ kubectl create --context=$CTX_CLUSTER3 -f @samples/helloworld/helloworld.yaml@ -l version=v1 -n sample
+    kubectl create --context=$CTX_CLUSTER3 -f @samples/helloworld/helloworld.yaml@ -l app=helloworld -n sample
+    kubectl create --context=$CTX_CLUSTER3 -f @samples/helloworld/helloworld.yaml@ -l version=v1 -n sample
     ```
 
 1.  Create a destination rule for `helloworld`:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER3 -n sample -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER3 -n sample -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
     metadata:
@@ -108,13 +108,13 @@ $ kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
 1.  Deploy the [httpbin]({{< github_tree >}}/samples/httpbin) sample:
 
     ```bash
-    $ kubectl create --context=$CTX_CLUSTER3 -f @samples/httpbin/httpbin.yaml@ -n sample
+    kubectl create --context=$CTX_CLUSTER3 -f @samples/httpbin/httpbin.yaml@ -n sample
     ```
 
 1.  Create a destination rule for `httpbin`:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER3 -n sample -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER3 -n sample -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
     metadata:
@@ -130,7 +130,7 @@ $ kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
 1.  Confirm `helloworld v1` and `httpbin` running:
 
     ```bash
-    $ kubectl get po --context=$CTX_CLUSTER3 -n sample
+    kubectl get po --context=$CTX_CLUSTER3 -n sample
     NAME                            READY     STATUS    RESTARTS   AGE
     helloworld-v1-d4557d97b-pv2hr   2/2       Running   0          40s
     httpbin-5446f4d9b4-sm6jm        2/2       Running   0          40s
@@ -141,7 +141,7 @@ $ kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
      `version v2`)
 
     ```bash
-    $ kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER3 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER3 -n default -c sleep -- curl helloworld.sample.svc.cluster.local:5000/hello -w "\nResponse code: %{http_code}\n"
+    kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER3 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER3 -n default -c sleep -- curl helloworld.sample.svc.cluster.local:5000/hello -w "\nResponse code: %{http_code}\n"
     Hello version: v1, instance: helloworld-v1-7bb88866c4-qvmzm
 
     Response code: 200
@@ -150,7 +150,7 @@ $ kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
 1.  Send a GET request from `sleep` to `httpbin`:
 
     ```bash
-    $ kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER3 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER3 -n default -c sleep -- curl httpbin.sample.svc.cluster.local:8000/status/418 -w "\nResponse code: %{http_code}\n"
+    kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER3 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER3 -n default -c sleep -- curl httpbin.sample.svc.cluster.local:8000/status/418 -w "\nResponse code: %{http_code}\n"
     -=[ teapot ]=-
 
        _...._
@@ -183,7 +183,7 @@ Once you finish the instructions above, you get the following setting:
 1.  Define an ingress `Gateway`:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER2 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER2 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: Gateway
     metadata:
@@ -209,7 +209,7 @@ Once you finish the instructions above, you get the following setting:
 1.  Configure routing to `helloworld v2`:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER2 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER2 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
     metadata:
@@ -239,7 +239,7 @@ Once you finish the instructions above, you get the following setting:
     private key of `cluster1`:
 
     ```bash
-    $ curl -HHost:c2.example.com --resolve c2.example.com:$CLUSTER2_SECURE_INGRESS_PORT:$CLUSTER2_INGRESS_HOST --cacert example.com.crt --key c1.example.com.key --cert c1.example.com.crt https://c2.example.com:$CLUSTER2_SECURE_INGRESS_PORT/sample/helloworld/hello -w "\nResponse code: %{http_code}\n"
+    curl -HHost:c2.example.com --resolve c2.example.com:$CLUSTER2_SECURE_INGRESS_PORT:$CLUSTER2_INGRESS_HOST --cacert example.com.crt --key c1.example.com.key --cert c1.example.com.crt https://c2.example.com:$CLUSTER2_SECURE_INGRESS_PORT/sample/helloworld/hello -w "\nResponse code: %{http_code}\n"
     Hello version: v2, instance: helloworld-v2-6cd449dff4-r9bl9
 
     Response code: 200
@@ -254,7 +254,7 @@ service in `cluster1` is different from the name of the service in `cluster2`.
     would use the real hostname of your cluster.
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     kind: Service
     apiVersion: v1
     metadata:
@@ -270,7 +270,7 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 1.  Create an endpoint for `c2.example.com`:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     kind: Endpoints
     apiVersion: v1
     metadata:
@@ -287,7 +287,7 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 1.  Create a destination rule for `c2.example.com`:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
     metadata:
@@ -314,7 +314,7 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 1.  To handle DNS, create a Kubernetes service for `hw.default.svc.cluster.local`.
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     kind: Service
     apiVersion: v1
     metadata:
@@ -330,7 +330,7 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 1.  Create a Kubernetes service for `hw-c2.default.svc.cluster.local`, to be used by the egress gateway:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     kind: Service
     apiVersion: v1
     metadata:
@@ -347,7 +347,7 @@ service in `cluster1` is different from the name of the service in `cluster2`.
     traffic directed to the egress gateway.
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: Gateway
     metadata:
@@ -391,7 +391,7 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 1.  Define a virtual service to direct traffic from the egress gateway to the external service:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
     metadata:
@@ -416,7 +416,7 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 1.  Direct the traffic destined to `hw.default.svc.cluster.local` to the private egress gateway:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
     metadata:
@@ -444,7 +444,7 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 1.  Send a request to `hw.default.svc.cluster.local` in the first cluster:
 
     ```bash
-    $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl hw:5000/hello -w "\nResponse code: %{http_code}\n"
+    kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl hw:5000/hello -w "\nResponse code: %{http_code}\n"
     Hello version: v2, instance: helloworld-v2-6cd449dff4-r9bl9
 
     Response code: 200
@@ -455,7 +455,7 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 1.  Define an ingress `Gateway`:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER3 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER3 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: Gateway
     metadata:
@@ -481,7 +481,7 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 1.  Configure routing to `helloworld v1` and `httpbin`:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER3 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER3 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
     metadata:
@@ -522,7 +522,7 @@ service in `cluster1` is different from the name of the service in `cluster2`.
     private key of `cluster1`:
 
     ```bash
-    $ curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c1.example.com.key --cert c1.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/helloworld/hello -w "\nResponse code: %{http_code}\n"
+    curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c1.example.com.key --cert c1.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/helloworld/hello -w "\nResponse code: %{http_code}\n"
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
 
     Response code: 200
@@ -531,7 +531,7 @@ service in `cluster1` is different from the name of the service in `cluster2`.
 1.  Test your configuration by accessing `httpbin`:
 
     ```bash
-    $ curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c1.example.com.key --cert c1.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/httpbin/status/418 -w "\nResponse code: %{http_code}\n"
+    curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c1.example.com.key --cert c1.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/httpbin/status/418 -w "\nResponse code: %{http_code}\n"
 
         -=[ teapot ]=-
 
@@ -554,7 +554,7 @@ Bind `helloworld` exposed from `cluster3` as `hw.default.svc.cluster.local` in `
     would use the real hostname of your cluster.
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     kind: Service
     apiVersion: v1
     metadata:
@@ -570,7 +570,7 @@ Bind `helloworld` exposed from `cluster3` as `hw.default.svc.cluster.local` in `
 1.  Create an endpoint for `c3.example.com`:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     kind: Endpoints
     apiVersion: v1
     metadata:
@@ -587,7 +587,7 @@ Bind `helloworld` exposed from `cluster3` as `hw.default.svc.cluster.local` in `
 1.  Create a destination rule for `c3.example.com`:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
     metadata:
@@ -614,7 +614,7 @@ Bind `helloworld` exposed from `cluster3` as `hw.default.svc.cluster.local` in `
 1.  Create a Kubernetes service for `hw-c3.default.svc.cluster.local`, to be used by the egress gateway:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     kind: Service
     apiVersion: v1
     metadata:
@@ -631,7 +631,7 @@ Bind `helloworld` exposed from `cluster3` as `hw.default.svc.cluster.local` in `
     `hw-c3.default.svc.cluster.local`.
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: Gateway
     metadata:
@@ -685,7 +685,7 @@ Bind `helloworld` exposed from `cluster3` as `hw.default.svc.cluster.local` in `
 1.  Define a virtual service to direct traffic from the egress gateway to the external service:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
     metadata:
@@ -711,7 +711,7 @@ Bind `helloworld` exposed from `cluster3` as `hw.default.svc.cluster.local` in `
     50:50 between helloworld v1 and helloworld v2:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
     metadata:
@@ -745,7 +745,7 @@ Bind `helloworld` exposed from `cluster3` as `hw.default.svc.cluster.local` in `
 1.  Send ten requests to `hw.default.svc.cluster.local` in the first cluster:
 
     ```bash
-    $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl hw:5000/hello; done'
+    kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl hw:5000/hello; done'
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
     Hello version: v2, instance: helloworld-v2-6cd449dff4-r9bl9
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
@@ -765,7 +765,7 @@ Bind `httpbin` exposed from `cluster3` as `httpbin.default.svc.cluster.local` in
 1.  Create a Kubernetes service for `httpbin-c3.default.svc.cluster.local`, to be used by the egress gateway:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     kind: Service
     apiVersion: v1
     metadata:
@@ -782,7 +782,7 @@ Bind `httpbin` exposed from `cluster3` as `httpbin.default.svc.cluster.local` in
     `httpbin-c3.default.svc.cluster.local`.
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: Gateway
     metadata:
@@ -846,7 +846,7 @@ Bind `httpbin` exposed from `cluster3` as `httpbin.default.svc.cluster.local` in
 1.  Define a virtual service to direct traffic from the egress gateway to the external service:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
     metadata:
@@ -871,7 +871,7 @@ Bind `httpbin` exposed from `cluster3` as `httpbin.default.svc.cluster.local` in
 1.  Direct the traffic destined to `httpbin.default.svc.cluster.local` to the private egress gateway:
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: VirtualService
     metadata:
@@ -899,7 +899,7 @@ Bind `httpbin` exposed from `cluster3` as `httpbin.default.svc.cluster.local` in
 1.  Send a request to `httpbin.default.svc.cluster.local` in the first cluster:
 
     ```bash
-    $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl httpbin:8000/status/418 -w "\nResponse code: %{http_code}\n"
+    kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl httpbin:8000/status/418 -w "\nResponse code: %{http_code}\n"
 
 
         -=[ teapot ]=-
@@ -918,7 +918,7 @@ Bind `httpbin` exposed from `cluster3` as `httpbin.default.svc.cluster.local` in
 1.  Resend ten requests to `hw.default.svc.cluster.local` in the first cluster, to verify that it works as previously:
 
     ```bash
-    $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl hw:5000/hello; done'
+    kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl hw:5000/hello; done'
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
     Hello version: v2, instance: helloworld-v2-6cd449dff4-r9bl9
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
@@ -964,7 +964,7 @@ Istio will deny all the unspecified access.
 1.   Create Istio service roles for read access to `helloworld` and `httpbin`.
 
     ```bash
-    $ kubectl apply  --context=$CTX_CLUSTER3 -n sample -f - <<EOF
+    kubectl apply  --context=$CTX_CLUSTER3 -n sample -f - <<EOF
     apiVersion: rbac.istio.io/v1alpha1
     kind: ServiceRole
     metadata:
@@ -990,7 +990,7 @@ Istio will deny all the unspecified access.
     gateway and also from `sleep`. These role bindings forbid, for example, calls from `httpbin` to `helloworld`.
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER3 -n sample -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER3 -n sample -f - <<EOF
     apiVersion: rbac.istio.io/v1alpha1
     kind: ServiceRoleBinding
     metadata:
@@ -1024,7 +1024,7 @@ Istio will deny all the unspecified access.
     {{< /warning >}}
 
     ```bash
-    $ kubectl apply --context=$CTX_CLUSTER3 -f - <<EOF
+    kubectl apply --context=$CTX_CLUSTER3 -f - <<EOF
     apiVersion: "rbac.istio.io/v1alpha1"
     kind: ClusterRbacConfig
     metadata:
@@ -1040,7 +1040,7 @@ Istio will deny all the unspecified access.
 1.  Check that unauthorized access is denied. Send a GET request from `sleep` to `helloworld`:
 
     ```bash
-    $ kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER3 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER3 -n default -c sleep -- curl helloworld.sample:5000/hello -w "\nResponse code: %{http_code}\n"
+    kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER3 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER3 -n default -c sleep -- curl helloworld.sample:5000/hello -w "\nResponse code: %{http_code}\n"
     RBAC: access denied
     Response code: 403
     ```
@@ -1048,7 +1048,7 @@ Istio will deny all the unspecified access.
 1.  Check that `sleep` can call `httpbin`, since it is allowed by the policy:
 
     ```bash
-    $ kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER3 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER3 -n default -c sleep -- curl httpbin.sample:8000/status/418 -w "\nResponse code: %{http_code}\n"
+    kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER3 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER3 -n default -c sleep -- curl httpbin.sample:8000/status/418 -w "\nResponse code: %{http_code}\n"
     -=[ teapot ]=-
 
        _...._
@@ -1066,7 +1066,7 @@ Istio will deny all the unspecified access.
     Send a request to `httpbin.default.svc.cluster.local` in the first cluster:
 
     ```bash
-    $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl httpbin:8000/status/418 -w "\nResponse code: %{http_code}\n"
+    kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl httpbin:8000/status/418 -w "\nResponse code: %{http_code}\n"
 
 
         -=[ teapot ]=-
@@ -1085,7 +1085,7 @@ Istio will deny all the unspecified access.
 1.  Send ten requests to `hw.default.svc.cluster.local` in the first cluster:
 
     ```bash
-    $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl hw:5000/hello; done'
+    kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl hw:5000/hello; done'
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
     Hello version: v2, instance: helloworld-v2-6cd449dff4-r9bl9
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
@@ -1107,7 +1107,7 @@ Istio will deny all the unspecified access.
     the `c1` cluster to access `helloworld` and only the `c4` cluster to access `httpbin`:
 
     ```bash
-    $ kubectl apply  --context=$CTX_CLUSTER3 -n istio-private-gateways -f - <<EOF
+    kubectl apply  --context=$CTX_CLUSTER3 -n istio-private-gateways -f - <<EOF
     apiVersion: networking.istio.io/v1alpha3
     kind: EnvoyFilter
     metadata:
@@ -1171,7 +1171,7 @@ Istio will deny all the unspecified access.
     1.  Verify that `helloworld` is allowed for the `c1` cluster:
 
         ```bash
-        $ curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c1.example.com.key --cert c1.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/helloworld/hello -w "\nResponse code: %{http_code}\n"
+        curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c1.example.com.key --cert c1.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/helloworld/hello -w "\nResponse code: %{http_code}\n"
         Hello version: v1, instance: helloworld-v1-7bb88866c4-qvmzm
 
         Response code: 200
@@ -1180,7 +1180,7 @@ Istio will deny all the unspecified access.
     1.  Verify that `helloworld` is denied for the `c4` cluster:
 
         ```bash
-        $ curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c4.example.com.key --cert c4.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/helloworld/hello -w "\nResponse code: %{http_code}\n"
+        curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c4.example.com.key --cert c4.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/helloworld/hello -w "\nResponse code: %{http_code}\n"
         RBAC: access denied
         Response code: 403
         ```
@@ -1188,7 +1188,7 @@ Istio will deny all the unspecified access.
     1.  Verify that `httpbin` is denied for the `c1` cluster:
 
         ```bash
-        $ curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c1.example.com.key --cert c1.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/httpbin/status/418 -w "\nResponse code: %{http_code}\n"
+        curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c1.example.com.key --cert c1.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/httpbin/status/418 -w "\nResponse code: %{http_code}\n"
         RBAC: access denied
         Response code: 403
         ```
@@ -1196,7 +1196,7 @@ Istio will deny all the unspecified access.
     1.  Verify that `httpbin` is allowed for the `c4` cluster:
 
         ```bash
-        $ curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c4.example.com.key --cert c4.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/httpbin/status/418 -w "\nResponse code: %{http_code}\n"
+        curl -HHost:c3.example.com --resolve c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT:$CLUSTER3_INGRESS_HOST --cacert example.com.crt --key c4.example.com.key --cert c4.example.com.crt https://c3.example.com:$CLUSTER3_SECURE_INGRESS_PORT/sample/httpbin/status/418 -w "\nResponse code: %{http_code}\n"
 
             -=[ teapot ]=-
 
@@ -1215,7 +1215,7 @@ Istio will deny all the unspecified access.
     Send a request to `httpbin.default.svc.cluster.local` in the first cluster:
 
     ```bash
-    $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl httpbin:8000/status/418 -w "\nResponse code: %{http_code}\n"
+    kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- curl httpbin:8000/status/418 -w "\nResponse code: %{http_code}\n"
     RBAC: access denied
     Response code: 403
     ```
@@ -1223,7 +1223,7 @@ Istio will deny all the unspecified access.
 1.  Send ten requests to `hw.default.svc.cluster.local` in the first cluster:
 
     ```bash
-    $ kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl hw:5000/hello; done'
+    kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'for i in `seq 1 10`; do curl hw:5000/hello; done'
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
     Hello version: v2, instance: helloworld-v2-6cd449dff4-r9bl9
     Hello version: v1, instance: helloworld-v1-7bb88866c4-h4bqg
@@ -1250,50 +1250,50 @@ Istio will deny all the unspecified access.
     {{< /warning >}}
 
     ```bash
-    $ kubectl delete --context=$CTX_CLUSTER3 -n istio-system clusterrbacconfig default
+    kubectl delete --context=$CTX_CLUSTER3 -n istio-system clusterrbacconfig default
     ```
 
 1.  Delete the service roles and service role bindings:
 
     ```bash
-    $ kubectl delete --context=$CTX_CLUSTER3 -n sample servicerolebinding helloworld-reader httpbin-reader
-    $ kubectl delete --context=$CTX_CLUSTER3 -n sample servicerole helloworld-reader httpbin-reader
+    kubectl delete --context=$CTX_CLUSTER3 -n sample servicerolebinding helloworld-reader httpbin-reader
+    kubectl delete --context=$CTX_CLUSTER3 -n sample servicerole helloworld-reader httpbin-reader
     ```
 
 1.  Delete the Envoy's filter:
 
     ```bash
-    $ kubectl delete envoyfilter private-ingress-rbac -n istio-private-gateways --context=$CTX_CLUSTER3
+    kubectl delete envoyfilter private-ingress-rbac -n istio-private-gateways --context=$CTX_CLUSTER3
     ```
 
 ### Delete consumption of the services in the first cluster
 
 ```bash
-$ kubectl delete --context=$CTX_CLUSTER1 virtualservice hw-c2 hw-c3 -n istio-private-gateways
-$ kubectl delete --context=$CTX_CLUSTER1 virtualservice hw
-$ kubectl delete --context=$CTX_CLUSTER1 virtualservice httpbin-c3 -n istio-private-gateways
-$ kubectl delete --context=$CTX_CLUSTER1 virtualservice httpbin
-$ kubectl delete --context=$CTX_CLUSTER1 destinationrule istio-private-egressgateway -n istio-private-gateways
-$ kubectl delete --context=$CTX_CLUSTER1 gateway istio-private-egressgateway-hw-c3 istio-private-egressgateway-hw-c2 istio-private-egressgateway-httpbin-c3 -n istio-private-gateways
-$ kubectl delete --context=$CTX_CLUSTER1 destinationrule c2-example-com c3-example-com -n istio-private-gateways
-$ kubectl delete --context=$CTX_CLUSTER1 endpoints c2-example-com c3-example-com -n istio-private-gateways
-$ kubectl delete --context=$CTX_CLUSTER1 service c2-example-com c3-example-com -n istio-private-gateways
-$ kubectl delete --context=$CTX_CLUSTER1 service hw hw-c2 hw-c3
-$ kubectl delete --context=$CTX_CLUSTER1 service httpbin httpbin-c3
+kubectl delete --context=$CTX_CLUSTER1 virtualservice hw-c2 hw-c3 -n istio-private-gateways
+kubectl delete --context=$CTX_CLUSTER1 virtualservice hw
+kubectl delete --context=$CTX_CLUSTER1 virtualservice httpbin-c3 -n istio-private-gateways
+kubectl delete --context=$CTX_CLUSTER1 virtualservice httpbin
+kubectl delete --context=$CTX_CLUSTER1 destinationrule istio-private-egressgateway -n istio-private-gateways
+kubectl delete --context=$CTX_CLUSTER1 gateway istio-private-egressgateway-hw-c3 istio-private-egressgateway-hw-c2 istio-private-egressgateway-httpbin-c3 -n istio-private-gateways
+kubectl delete --context=$CTX_CLUSTER1 destinationrule c2-example-com c3-example-com -n istio-private-gateways
+kubectl delete --context=$CTX_CLUSTER1 endpoints c2-example-com c3-example-com -n istio-private-gateways
+kubectl delete --context=$CTX_CLUSTER1 service c2-example-com c3-example-com -n istio-private-gateways
+kubectl delete --context=$CTX_CLUSTER1 service hw hw-c2 hw-c3
+kubectl delete --context=$CTX_CLUSTER1 service httpbin httpbin-c3
 ```
 
 ### Delete exposure of the services in the second cluster
 
 ```bash
-$ kubectl delete --context=$CTX_CLUSTER2 virtualservice privately-exposed-services -n istio-private-gateways
-$ kubectl delete --context=$CTX_CLUSTER2 gateway istio-private-ingressgateway -n istio-private-gateways
+kubectl delete --context=$CTX_CLUSTER2 virtualservice privately-exposed-services -n istio-private-gateways
+kubectl delete --context=$CTX_CLUSTER2 gateway istio-private-ingressgateway -n istio-private-gateways
 ```
 
 ### Delete exposure of the services in the third cluster
 
 ```bash
-$ kubectl delete --context=$CTX_CLUSTER3 virtualservice privately-exposed-services -n istio-private-gateways
-$ kubectl delete --context=$CTX_CLUSTER3 gateway istio-private-ingressgateway -n istio-private-gateways
+kubectl delete --context=$CTX_CLUSTER3 virtualservice privately-exposed-services -n istio-private-gateways
+kubectl delete --context=$CTX_CLUSTER3 gateway istio-private-ingressgateway -n istio-private-gateways
 ```
 
 ### Delete the private gateways
@@ -1307,15 +1307,15 @@ Follow the instructions in the [Cleenup](/docs/examples/multimesh/multimesh-comm
 1.  Delete the services in `cluster2`:
 
     ```bash
-    $ kubectl delete --context=$CTX_CLUSTER2 destinationrule helloworld -n sample
-    $ kubectl delete --context=$CTX_CLUSTER2 -f @samples/helloworld/helloworld.yaml@ -l version=v2 -n sample
-    $ kubectl delete --context=$CTX_CLUSTER2 -f @samples/helloworld/helloworld.yaml@ -l app=helloworld -n sample
+    kubectl delete --context=$CTX_CLUSTER2 destinationrule helloworld -n sample
+    kubectl delete --context=$CTX_CLUSTER2 -f @samples/helloworld/helloworld.yaml@ -l version=v2 -n sample
+    kubectl delete --context=$CTX_CLUSTER2 -f @samples/helloworld/helloworld.yaml@ -l app=helloworld -n sample
     ```
 
 1.  Delete the `sample` namespace in `cluster2`:
 
     ```bash
-    $ kubectl delete namespace sample --context=$CTX_CLUSTER2
+    kubectl delete namespace sample --context=$CTX_CLUSTER2
     ```
 
 #### Delete the services in the third cluster
@@ -1323,22 +1323,22 @@ Follow the instructions in the [Cleenup](/docs/examples/multimesh/multimesh-comm
 1.  Delete the services in `cluster3`:
 
     ```bash
-    $ kubectl delete --context=$CTX_CLUSTER3 destinationrule helloworld httpbin -n sample
-    $ kubectl delete --context=$CTX_CLUSTER3 -f @samples/httpbin/httpbin.yaml@ -n sample
-    $ kubectl delete --context=$CTX_CLUSTER3 -f @samples/helloworld/helloworld.yaml@ -l version=v1 -n sample
-    $ kubectl delete --context=$CTX_CLUSTER3 -f @samples/helloworld/helloworld.yaml@ -l app=helloworld -n sample
+    kubectl delete --context=$CTX_CLUSTER3 destinationrule helloworld httpbin -n sample
+    kubectl delete --context=$CTX_CLUSTER3 -f @samples/httpbin/httpbin.yaml@ -n sample
+    kubectl delete --context=$CTX_CLUSTER3 -f @samples/helloworld/helloworld.yaml@ -l version=v1 -n sample
+    kubectl delete --context=$CTX_CLUSTER3 -f @samples/helloworld/helloworld.yaml@ -l app=helloworld -n sample
     ```
 
 1.  Delete the `sample` namespace in `cluster2`:
 
     ```bash
-    $ kubectl delete namespace sample --context=$CTX_CLUSTER3
+    kubectl delete namespace sample --context=$CTX_CLUSTER3
     ```
 
 ### Delete the sleep samples
 
 ```bash
-$ kubectl delete -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER1 --ignore-not-found=true
-$ kubectl delete -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER2 --ignore-not-found=true
-$ kubectl delete -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER3 --ignore-not-found=true
+kubectl delete -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER1 --ignore-not-found=true
+kubectl delete -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER2 --ignore-not-found=true
+kubectl delete -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER3 --ignore-not-found=true
 ```
