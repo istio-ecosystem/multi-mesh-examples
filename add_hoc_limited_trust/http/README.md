@@ -166,7 +166,7 @@ kubectl apply -f @samples/sleep/sleep.yaml--context=$CTX_CLUSTER3
 
 After completing the steps until now, you get the following setting:
 
-![The three clusters with the deployed services](MeshFederationHttp_1.svg)
+![The three clusters with the deployed services](MeshFederationHTTP_1.svg)
 *The three clusters with the deployed services*
 
 ## Perform one-time setup
@@ -175,7 +175,7 @@ Follow the instructions in the [Setup](/docs/examples/multimesh/multimesh-common
 
 Once you finish the instructions above, you get the following setting:
 
-![The three clusters with the deployed services and gateways](MeshFederationHttp_2.svg)
+![The three clusters with the deployed services and gateways](MeshFederationHTTP_2.svg)
 *The three clusters with the deployed services and gateways*
 
 ## Expose and consume services (on a per-service basis)
@@ -935,7 +935,7 @@ Bind `httpbin` exposed from `cluster3` as `httpbin.default.svc.cluster.local` in
 
 You have now the setting as shown in the diagram below:
 
-![The three clusters with configured exposure and consumption](MeshFederationHttp_3.svg)
+![The three clusters with configured exposure and consumption](MeshFederationHTTP_3.svg)
 *The three clusters with configured exposure and consumption*
 
 ## Apply Istio RBAC on the third cluster
