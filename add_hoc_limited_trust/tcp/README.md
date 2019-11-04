@@ -156,7 +156,8 @@ prepending it with a prefix string. The services differ only by their prefixes, 
 After completing the steps until now, you get the following setting (the `sleep` containers in the second and third
 clusters omitted):
 
-{{< image width="100%" link="./MeshFederationTCP_1.svg" caption="The three clusters with the deployed services" >}}
+![The three clusters with the deployed services](MeshFederationTCP_1.svg)
+*The three clusters with the deployed services*
 
 ## Perform one-time setup of private gateways
 
@@ -164,7 +165,8 @@ Follow the instructions in the [Setup](/docs/examples/multimesh/multimesh-common
 
 Once you finish the instructions above, you get the following setting:
 
-{{< image width="100%" link="./MeshFederationTCP_2.svg" caption="The three clusters with the deployed services and gateways" >}}
+![The three clusters with the deployed services and gateways](MeshFederationTCP_2.svg)
+*The three clusters with the deployed services and gateways*
 
 ## Expose and consume services (on a per-service basis)
 
@@ -926,7 +928,8 @@ Bind `tcp-hello-echo` exposed from the third cluster as `tcp-hello-echo.default.
 
 You have now the setting as shown in the diagram below:
 
-{{< image width="100%" link="./MeshFederationTCP_3.svg" caption="The three clusters with configured exposure and consumption" >}}
+![The three clusters with configured exposure and consumption](MeshFederationTCP_3.svg)
+*The three clusters with configured exposure and consumption*
 
 ## Apply Istio RBAC on the third cluster
 

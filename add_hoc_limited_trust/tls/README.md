@@ -229,7 +229,8 @@ openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example In
 After completing the steps until now, you get the following setting (the `sleep` containers in the second and third
 clusters omitted):
 
-{{< image width="100%" link="./MeshFederationTLS_1.svg" caption="The three clusters with the deployed services" >}}
+![The three clusters with the deployed services](MeshFederationTLS_1.svg)
+*The three clusters with the deployed services*
 
 ## Perform one-time setup of private gateways
 
@@ -237,7 +238,8 @@ Follow the instructions in the [Setup](/docs/examples/multimesh/multimesh-common
 
 Once you finish the instructions above, you get the following setting:
 
-{{< image width="100%" link="./MeshFederationTLS_2.svg" caption="The three clusters with the deployed services and gateways" >}}
+![The three clusters with the deployed services and gateways](MeshFederationTLS_2.svg)
+*The three clusters with the deployed services and gateways*
 
 ## Expose a TLS service in the second cluster
 
@@ -947,7 +949,8 @@ Bind the services exposed from `cluster3` to the same name in `cluster1`.
 
 You have now the setting as shown in the diagram below:
 
-{{< image width="100%" link="./MeshFederationTLS_3.svg" caption="The three clusters with configured exposure and consumption" >}}
+![The three clusters with configured exposure and consumption](MeshFederationTLS_3.svg)
+*The three clusters with configured exposure and consumption*
 
 ## Apply Istio RBAC on the third cluster
 

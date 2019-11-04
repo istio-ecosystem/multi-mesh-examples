@@ -482,6 +482,9 @@ You can use the command of your choice to generate certificates and keys, the co
 
 ## The diagram of the accomplished setup
 
+![The three clusters with the deployed gateways](MeshFederationInitialSetting.svg)
+*TThe three clusters with the deployed gateways*
+
 {{< image width="100%" link="./MeshFederationInitialSetting.svg" caption="The three clusters with the deployed gateways" >}}
 
 ## Cleanup
