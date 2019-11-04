@@ -63,7 +63,7 @@ kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER3
 1.  Check that the service is accessible with the cluster. Send a GET request from `sleep` to `helloworld`:
 
     ```bash
-     kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER2 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER2 -n default -c sleep -- curl helloworld.sample.svc.cluster.local:5000/hello -w "\nResponse code: %{http_code}\n"
+    kubectl exec -it $(kubectl get pod -l app=sleep --context=$CTX_CLUSTER2 -n default -o jsonpath='{.items[0].metadata.name}') --context=$CTX_CLUSTER2 -n default -c sleep -- curl helloworld.sample.svc.cluster.local:5000/hello -w "\nResponse code: %{http_code}\n"
     Hello version: v2, instance: helloworld-v2-6cd449dff4-n7s48
 
     Response code: 200
