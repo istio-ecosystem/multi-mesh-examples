@@ -9,9 +9,9 @@ In each of the clusters, deploy the [sleep]({{< github_tree >}}/samples/sleep) s
 sending requests.
 
 ```bash
-kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER1
-kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER2
-kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
+kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER1
+kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER2
+kubectl apply -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER3
 ```
 
 ## Deploy hello world samples in the second and third clusters
@@ -28,8 +28,8 @@ kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
 1.  Deploy `helloworld v2`:
 
     ```bash
-    kubectl create --context=$CTX_CLUSTER2 -f @samples/helloworld/helloworld.yaml@ -l app=helloworld -n sample
-    kubectl create --context=$CTX_CLUSTER2 -f @samples/helloworld/helloworld.yaml@ -l version=v2 -n sample
+    kubectl create --context=$CTX_CLUSTER2 -f samples/helloworld/helloworld.yaml -l app=helloworld -n sample
+    kubectl create --context=$CTX_CLUSTER2 -f samples/helloworld/helloworld.yaml -l version=v2 -n sample
     ```
 
 1.  Create a destination rule for `helloworld`:
@@ -81,8 +81,8 @@ kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
 1.  Deploy `helloworld v1`:
 
     ```bash
-    kubectl create --context=$CTX_CLUSTER3 -f @samples/helloworld/helloworld.yaml@ -l app=helloworld -n sample
-    kubectl create --context=$CTX_CLUSTER3 -f @samples/helloworld/helloworld.yaml@ -l version=v1 -n sample
+    kubectl create --context=$CTX_CLUSTER3 -f samples/helloworld/helloworld.yaml -l app=helloworld -n sample
+    kubectl create --context=$CTX_CLUSTER3 -f samples/helloworld/helloworld.yaml -l version=v1 -n sample
     ```
 
 1.  Create a destination rule for `helloworld`:
@@ -108,7 +108,7 @@ kubectl apply -f @samples/sleep/sleep.yaml@ --context=$CTX_CLUSTER3
 1.  Deploy the [httpbin]({{< github_tree >}}/samples/httpbin) sample:
 
     ```bash
-    kubectl create --context=$CTX_CLUSTER3 -f @samples/httpbin/httpbin.yaml@ -n sample
+    kubectl create --context=$CTX_CLUSTER3 -f samples/httpbin/httpbin.yaml -n sample
     ```
 
 1.  Create a destination rule for `httpbin`:
@@ -1311,8 +1311,8 @@ Follow the instructions in the [Cleenup](/docs/examples/multimesh/multimesh-comm
 
     ```bash
     kubectl delete --context=$CTX_CLUSTER2 destinationrule helloworld -n sample
-    kubectl delete --context=$CTX_CLUSTER2 -f @samples/helloworld/helloworld.yaml@ -l version=v2 -n sample
-    kubectl delete --context=$CTX_CLUSTER2 -f @samples/helloworld/helloworld.yaml@ -l app=helloworld -n sample
+    kubectl delete --context=$CTX_CLUSTER2 -f samples/helloworld/helloworld.yaml -l version=v2 -n sample
+    kubectl delete --context=$CTX_CLUSTER2 -f samples/helloworld/helloworld.yaml -l app=helloworld -n sample
     ```
 
 1.  Delete the `sample` namespace in `cluster2`:
@@ -1327,9 +1327,9 @@ Follow the instructions in the [Cleenup](/docs/examples/multimesh/multimesh-comm
 
     ```bash
     kubectl delete --context=$CTX_CLUSTER3 destinationrule helloworld httpbin -n sample
-    kubectl delete --context=$CTX_CLUSTER3 -f @samples/httpbin/httpbin.yaml@ -n sample
-    kubectl delete --context=$CTX_CLUSTER3 -f @samples/helloworld/helloworld.yaml@ -l version=v1 -n sample
-    kubectl delete --context=$CTX_CLUSTER3 -f @samples/helloworld/helloworld.yaml@ -l app=helloworld -n sample
+    kubectl delete --context=$CTX_CLUSTER3 -f samples/httpbin/httpbin.yaml -n sample
+    kubectl delete --context=$CTX_CLUSTER3 -f samples/helloworld/helloworld.yaml -l version=v1 -n sample
+    kubectl delete --context=$CTX_CLUSTER3 -f samples/helloworld/helloworld.yaml -l app=helloworld -n sample
     ```
 
 1.  Delete the `sample` namespace in `cluster2`:
