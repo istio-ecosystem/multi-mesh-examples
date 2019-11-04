@@ -471,7 +471,7 @@ You can use the command of your choice to generate certificates and keys, the co
 
 1.  In case you have load balancers, set the private ingress IP and ports for the second and third clusters by running the
     commands below. Otherwise, read
-    [the instructions for using a node port for ingress](/docs/tasks/traffic-management/ingress/ingress-control/#determining-the-ingress-ip-and-ports) and adapt them for your private ingress gateway.
+    [the instructions for using a node port for ingress](https://istio.io/docs/tasks/traffic-management/ingress/ingress-control/#determining-the-ingress-ip-and-ports) and adapt them for your private ingress gateway.
 
     ```bash
     export CLUSTER2_INGRESS_HOST=$(kubectl -n istio-private-gateways get service istio-private-ingressgateway --context=$CTX_CLUSTER2 -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
