@@ -337,10 +337,9 @@ Bind the service exposed from `cluster2` to the same name in `cluster1`.
 1.  Create a Kubernetes service for `c2.example.com` since it is not an existing hostname. In the real life, you
     would use the real hostname of your cluster.
 
-    {{< warning >}}
+    :warning:
     Here an ExternalName service is used since Istio can handle subsets for external services only for ExternalName
     services, not for Services with Endpoints.
-    {{< /warning >}}
 
     ```bash
     kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
@@ -660,10 +659,10 @@ Bind the services exposed from `cluster3` to the same name in `cluster1`.
 1.  Create a Kubernetes service for `c3.example.com` since it is not an existing hostname. In the real life, you
     would use the real hostname of your cluster.
 
-    {{< warning >}}
+    :warning:
     Here an ExternalName service is used since Istio can handle subsets for external services only for ExternalName
     services, not for Services with Endpoints.
-    {{< /warning >}}
+
 
     ```bash
     kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
@@ -1039,10 +1038,10 @@ Istio will deny all the unspecified access.
 
 1.  Enable [Istio RBAC](/docs/concepts/security/#authorization) on the `sample` namespace.
 
-    {{< warning >}}
+    :warning:
     If you already enabled Istio RBAC on some of your namespaces, add `sample` to the list of the included namespaces.
     The command below assumes that `sample` is the only namespace you enabled RBAC on.
-    {{< /warning >}}
+
 
     ```bash
     kubectl apply --context=$CTX_CLUSTER3 -f - <<EOF
@@ -1212,11 +1211,11 @@ Istio will deny all the unspecified access.
 1.  Disable [Istio RBAC](/docs/concepts/security/#authorization) on the `sample` and `istio-private-gateways`
     namespaces.
 
-    {{< warning >}}
+    :warning:
     If you enabled Istio RBAC on some of your namespaces, remove `sample`
     from the list of the included namespaces. The command below assumes that you enabled Istio RBAC only on the
     `sample` namespace.
-    {{< /warning >}}
+
 
     ```bash
     kubectl delete --context=$CTX_CLUSTER3 -n istio-system clusterrbacconfig default

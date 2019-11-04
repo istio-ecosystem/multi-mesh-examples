@@ -1021,10 +1021,10 @@ Istio will deny all the unspecified access.
 
 1.  Enable [Istio RBAC](/docs/concepts/security/#authorization) on the `sample` namespace.
 
-    {{< warning >}}
+    :warning:
     If you already enabled Istio RBAC on some of your namespaces, add `sample` to the list of the included namespaces.
     The command below assumes that `sample` is the only namespace you enabled RBAC on.
-    {{< /warning >}}
+
 
     ```bash
     kubectl apply --context=$CTX_CLUSTER3 -f - <<EOF
@@ -1246,11 +1246,10 @@ Istio will deny all the unspecified access.
 1.  Disable [Istio RBAC](/docs/concepts/security/#authorization) on the `sample` and `istio-private-gateways`
     namespaces.
 
-    {{< warning >}}
+    :warning:
     If you enabled Istio RBAC on some of your namespaces, remove `sample`
     from the list of the included namespaces. The command below assumes that you enabled Istio RBAC only on the
     `sample` namespace.
-    {{< /warning >}}
 
     ```bash
     kubectl delete --context=$CTX_CLUSTER3 -n istio-system clusterrbacconfig default
