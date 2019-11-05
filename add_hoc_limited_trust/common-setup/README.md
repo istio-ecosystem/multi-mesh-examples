@@ -245,7 +245,7 @@ You can use the command of your choice to generate certificates and keys, the co
 1.  Verify that the egress gateway's pod is running:
 
     ```bash
-    kubectl get pods $(kubectl get pod -l istio=private-egressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1)  -n istio-private-gateways --context=$CTX_CLUSTER1
+    kubectl get pods $(kubectl get pod -l istio=private-egressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -n istio-private-gateways --context=$CTX_CLUSTER1
     ```
 
     ```
