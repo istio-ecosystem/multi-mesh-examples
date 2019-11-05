@@ -1424,4 +1424,4 @@ kubectl delete -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER3
 
 ### Delete the private gateways
 
-Follow the instructions in the [Cleenup](../common-setup/#cleanup) section of [common multi-mesh setup](../common-setup).
+Follow the instructions in the [Cleanup](../common-setup/#cleanup) section of [common multi-mesh setup](../common-setup).

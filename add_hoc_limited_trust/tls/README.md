@@ -1389,4 +1389,4 @@ rm ./nginx1.crt ./nginx1.key ./nginx2.crt ./nginx2.key ./nginx-error.crt ./nginx
 
 ### Delete the private gateways
 
-Follow the instructions in the [Cleenup](../common-setup/#cleanup) section of [common multi-mesh setup](../common-setup).
+Follow the instructions in the [Cleanup](../common-setup/#cleanup) section of [common multi-mesh setup](../common-setup).
