@@ -256,7 +256,7 @@ You can use the command of your choice to generate certificates and keys, the co
 1.  Verify that the key and the certificates are successfully loaded in the egress gateway's pod:
 
     ```bash
-    kubectl exec -it $(kubectl get pod -l istio=private-egressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1)  -n istio-private-gateways --context=$CTX_CLUSTER1 -- ls -al /etc/istio/c1.example.com/certs /etc/istio/example.com/certs
+    kubectl exec -it $(kubectl get pod -l istio=private-egressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -n istio-private-gateways --context=$CTX_CLUSTER1 -- ls -al /etc/istio/c1.example.com/certs /etc/istio/example.com/certs
     ```
 
     ```
@@ -342,7 +342,7 @@ You can use the command of your choice to generate certificates and keys, the co
 1.  Verify that the ingress gateway's pod is running:
 
     ```bash
-    kubectl get pods $(kubectl get pod -l istio=private-ingressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER2)  -n istio-private-gateways --context=$CTX_CLUSTER2
+    kubectl get pods $(kubectl get pod -l istio=private-ingressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER2) -n istio-private-gateways --context=$CTX_CLUSTER2
     ```
 
     ```
@@ -353,7 +353,7 @@ You can use the command of your choice to generate certificates and keys, the co
 1.  Verify that the key and the certificate are successfully loaded in the ingress gateway's pod:
 
     ```bash
-    kubectl exec -it $(kubectl get pod -l istio=private-ingressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER2)  -n istio-private-gateways --context=$CTX_CLUSTER2 -- ls -al /etc/istio/c2.example.com/certs /etc/istio/example.com/certs
+    kubectl exec -it $(kubectl get pod -l istio=private-ingressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER2) -n istio-private-gateways --context=$CTX_CLUSTER2 -- ls -al /etc/istio/c2.example.com/certs /etc/istio/example.com/certs
     ```
 
     ```
@@ -439,7 +439,7 @@ You can use the command of your choice to generate certificates and keys, the co
 1.  Verify that the ingress gateway's pod is running:
 
     ```bash
-    kubectl get pods $(kubectl get pod -l istio=private-ingressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3)  -n istio-private-gateways --context=$CTX_CLUSTER3
+    kubectl get pods $(kubectl get pod -l istio=private-ingressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -n istio-private-gateways --context=$CTX_CLUSTER3
     ```
 
     ```
@@ -450,7 +450,7 @@ You can use the command of your choice to generate certificates and keys, the co
 1.  Verify that the key and the certificate are successfully loaded in the ingress gateway's pod:
 
     ```bash
-    kubectl exec -it $(kubectl get pod -l istio=private-ingressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3)  -n istio-private-gateways --context=$CTX_CLUSTER3 -- ls -al /etc/istio/c3.example.com/certs /etc/istio/example.com/certs
+    kubectl exec -it $(kubectl get pod -l istio=private-ingressgateway -n istio-private-gateways -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER3) -n istio-private-gateways --context=$CTX_CLUSTER3 -- ls -al /etc/istio/c3.example.com/certs /etc/istio/example.com/certs
     ```
 
     ```
