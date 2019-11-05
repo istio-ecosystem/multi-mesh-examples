@@ -280,27 +280,12 @@ service in `cluster1` is different from the name of the service in `cluster2`.
     metadata:
       name: c2-example-com
     spec:
+      type: ExternalName
+      externalName: $CLUSTER2_INGRESS_HOST
       ports:
       - protocol: TCP
         port: 15443
         name: tls-for-cross-cluster-communication
-    EOF
-    ```
-
-1.  Create an endpoint for `c2.example.com`:
-
-    ```bash
-    kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
-    kind: Endpoints
-    apiVersion: v1
-    metadata:
-      name: c2-example-com
-    subsets:
-      - addresses:
-          - ip: $CLUSTER2_INGRESS_HOST
-        ports:
-          - port: 15443
-            name: tls-for-cross-cluster-communication
     EOF
     ```
 
@@ -589,27 +574,12 @@ Bind `helloworld` exposed from `cluster3` as `hw.default.svc.cluster.local` in `
     metadata:
       name: c3-example-com
     spec:
+      type: ExternalName
+      externalName: $CLUSTER2_INGRESS_HOST
       ports:
       - protocol: TCP
         port: 15443
         name: tls-for-cross-cluster-communication
-    EOF
-    ```
-
-1.  Create an endpoint for `c3.example.com`:
-
-    ```bash
-    kubectl apply --context=$CTX_CLUSTER1 -n istio-private-gateways -f - <<EOF
-    kind: Endpoints
-    apiVersion: v1
-    metadata:
-      name: c3-example-com
-    subsets:
-      - addresses:
-          - ip: $CLUSTER3_INGRESS_HOST
-        ports:
-          - port: 15443
-            name: tls-for-cross-cluster-communication
     EOF
     ```
 
@@ -1339,7 +1309,6 @@ kubectl delete --context=$CTX_CLUSTER1 virtualservice httpbin
 kubectl delete --context=$CTX_CLUSTER1 destinationrule istio-private-egressgateway -n istio-private-gateways
 kubectl delete --context=$CTX_CLUSTER1 gateway istio-private-egressgateway-hw-c3 istio-private-egressgateway-hw-c2 istio-private-egressgateway-httpbin-c3 -n istio-private-gateways
 kubectl delete --context=$CTX_CLUSTER1 destinationrule c2-example-com c3-example-com -n istio-private-gateways
-kubectl delete --context=$CTX_CLUSTER1 endpoints c2-example-com c3-example-com -n istio-private-gateways
 kubectl delete --context=$CTX_CLUSTER1 service c2-example-com c3-example-com -n istio-private-gateways
 kubectl delete --context=$CTX_CLUSTER1 service hw hw-c2 hw-c3
 kubectl delete --context=$CTX_CLUSTER1 service httpbin httpbin-c3
