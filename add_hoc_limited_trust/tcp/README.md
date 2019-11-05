@@ -1407,7 +1407,7 @@ kubectl delete -f samples/sleep/sleep.yaml --context=$CTX_CLUSTER3
     ```bash
     kubectl delete -n sample -l service=tcp-echo --context=$CTX_CLUSTER3 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-echo.yaml
     kubectl delete -n sample -l app=tcp-echo,version=v2 --context=$CTX_CLUSTER3 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-echo.yaml
-    kubectl apply -n sample --context=$CTX_CLUSTER3 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-hello-echo.yaml
+    kubectl delete -n sample --context=$CTX_CLUSTER3 -f https://raw.githubusercontent.com/istio/istio/533221ef3369834ae44eaa4abcddf67c2d3dc549/samples/tcp-echo/tcp-hello-echo.yaml
     ```
 
 1.  Delete the destination rules:
