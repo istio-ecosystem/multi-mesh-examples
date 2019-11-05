@@ -764,6 +764,22 @@ Bind `helloworld` exposed from `cluster3` as `hw.default.svc.cluster.local` in `
 
 Bind `httpbin` exposed from `cluster3` as `httpbin.default.svc.cluster.local` in `cluster1`.
 
+1.  To handle DNS, create a Kubernetes service for `httpbin.default.svc.cluster.local`.
+
+    ```bash
+    kubectl apply --context=$CTX_CLUSTER1 -f - <<EOF
+    kind: Service
+    apiVersion: v1
+    metadata:
+      name: httpbin
+    spec:
+      ports:
+      - name: http
+        protocol: TCP
+        port: 8000
+    EOF
+    ```
+
 1.  Create a Kubernetes service for `httpbin-c3.default.svc.cluster.local`, to be used by the egress gateway:
 
     ```bash
