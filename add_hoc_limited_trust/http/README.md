@@ -575,7 +575,7 @@ Bind `helloworld` exposed from `cluster3` as `hw.default.svc.cluster.local` in `
       name: c3-example-com
     spec:
       type: ExternalName
-      externalName: $CLUSTER2_INGRESS_HOST
+      externalName: $CLUSTER3_INGRESS_HOST
       ports:
       - protocol: TCP
         port: 15443
