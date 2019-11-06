@@ -1384,7 +1384,7 @@ kubectl delete destinationrule istio-private-egressgateway c2-example-com c3-exa
 ### Delete the temporary files:
 
 ```bash
-rm ./nginx1.crt ./nginx1.key ./nginx2.crt ./nginx2.key ./nginx-error.crt ./nginx-error.key ./default2.conf ./default-error.conf ./nginx.example.com.crt ./nginx.example.com.key
+rm ./nginx1.crt ./nginx1.csr ./nginx1.key ./nginx2.crt ./nginx2.csr ./nginx2.key ./nginx-error.crt ./nginx-error.csr ./nginx-error.key ./default2.conf ./default-error.conf ./nginx.example.com.crt ./nginx.example.com.key
 ```
 
 ### Delete the private gateways
