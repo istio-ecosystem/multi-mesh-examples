@@ -1283,15 +1283,10 @@ Istio will deny all the unspecified access.
 
     Kill the command above by pressing `Ctrl-C`.
 
-1.  Check the services can be called from the first cluster as previously. Test accessing the
-    `tcp-hello-echo.sample.svc.cluster.local` service from the first cluster:
+1.  Check that `tcp-hello-echo.sample.svc.cluster.local` service is blocked for access from the first cluster:
 
     ```bash
     kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}' --context=$CTX_CLUSTER1) -c sleep --context=$CTX_CLUSTER1 -- sh -c 'echo world | nc tcp-hello-echo 9001'
-    ```
-
-    ```
-    hello world
     ```
 
 1.  Send ten requests to `echo.sample.svc.cluster.local` service from the first cluster, they should be accessed as
