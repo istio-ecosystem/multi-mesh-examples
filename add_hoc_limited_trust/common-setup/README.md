@@ -504,10 +504,15 @@ You can use the command of your choice to generate certificates and keys, the co
     export CLUSTER3_SECURE_INGRESS_PORT=$(kubectl -n istio-private-gateways get service istio-private-ingressgateway --context=$CTX_CLUSTER3 -o jsonpath='{.spec.ports[?(@.name=="https-for-cross-cluster-communication")].port}')
     ```
 
-## The diagram of the accomplished setup
+## The diagrams of the accomplished setup
 
 ![The three clusters with the deployed gateways](MeshFederationInitialSetting.svg)
 *The three clusters with the deployed gateways*
+
+The involved configuration items:
+
+![The involved configuration items](configuration.png)
+*The involved configuration items*
 
 ## Cleanup
 

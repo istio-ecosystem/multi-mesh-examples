@@ -958,6 +958,11 @@ You have now the setting as shown in the diagram below:
 ![The three clusters with configured exposure and consumption](MeshFederationHTTP_3.svg)
 *The three clusters with configured exposure and consumption*
 
+The involved configuration items:
+
+![The involved configuration items](configuration.png)
+*The involved configuration items*
+
 ## Apply Istio RBAC on the third cluster
 
 In this section you harden the security of your third cluster by applying
