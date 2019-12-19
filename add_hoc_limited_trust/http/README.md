@@ -961,7 +961,6 @@ You have now the setting as shown in the diagram below:
 The involved configuration items:
 
 ![The involved configuration items](configuration.png)
-*The involved configuration items*
 
 ## Apply Istio RBAC on the third cluster
 

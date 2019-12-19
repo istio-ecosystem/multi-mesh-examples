@@ -512,7 +512,6 @@ You can use the command of your choice to generate certificates and keys, the co
 The involved configuration items:
 
 ![The involved configuration items](configuration.png)
-*The involved configuration items*
 
 ## Cleanup
 
