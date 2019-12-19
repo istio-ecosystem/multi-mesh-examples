@@ -654,7 +654,7 @@ Bind `helloworld` exposed from `cluster3` as `hw.default.svc.cluster.local` in `
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
     metadata:
-      name: istio-private-egressgateway-hw-default
+      name: istio-private-egressgateway
     spec:
       host: istio-private-egressgateway.istio-private-gateways.svc.cluster.local
       subsets:
